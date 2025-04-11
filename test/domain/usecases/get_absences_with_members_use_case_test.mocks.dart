@@ -36,9 +36,15 @@ class MockAbsenceRepository extends _i1.Mock implements _i2.AbsenceRepository {
   }
 
   @override
-  _i3.Future<List<_i4.Absence>> getAllAbsences() =>
+  _i3.Future<List<_i4.Absence>> getAllAbsences({
+    required int? offset,
+    required int? limit,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getAllAbsences, []),
+            Invocation.method(#getAllAbsences, [], {
+              #offset: offset,
+              #limit: limit,
+            }),
             returnValue: _i3.Future<List<_i4.Absence>>.value(<_i4.Absence>[]),
           )
           as _i3.Future<List<_i4.Absence>>);

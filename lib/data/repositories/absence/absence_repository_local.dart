@@ -8,30 +8,30 @@ class AbsenceLocalRepository implements AbsenceRepository {
   AbsenceLocalRepository(this.service);
 
   @override
-  Future<List<Absence>> getAllAbsences() async {
+  Future<List<Absence>> getAllAbsences({int offset = 0, int limit = 10}) async {
     final apiAbsences = await service.fetchAbsences();
-    return apiAbsences.map((dto) {
-      // Determine status based on timestamps:
-      // If confirmedAt is present → Confirmed
-      // Else if rejectedAt is present → Rejected
-      // Otherwise → Requested
-      final status =
-          dto.confirmedAt != null
-              ? AbsenceStatus.confirmed
-              : dto.rejectedAt != null
-              ? AbsenceStatus.rejected
-              : AbsenceStatus.requested;
+    return apiAbsences
+        .map((dto) {
+          final status =
+              dto.confirmedAt != null
+                  ? AbsenceStatus.confirmed
+                  : dto.rejectedAt != null
+                  ? AbsenceStatus.rejected
+                  : AbsenceStatus.requested;
 
-      return Absence(
-        id: dto.id ?? -1,
-        userId: dto.userId ?? -1,
-        type: dto.type ?? '',
-        startDate: DateTime.tryParse(dto.startDate ?? '') ?? DateTime(1970),
-        endDate: DateTime.tryParse(dto.endDate ?? '') ?? DateTime(1970),
-        memberNote: dto.memberNote?.trim().isEmpty ?? true ? null : dto.memberNote,
-        admitterNote: dto.admitterNote?.trim().isEmpty ?? true ? null : dto.admitterNote,
-        status: status,
-      );
-    }).toList();
+          return Absence(
+            id: dto.id ?? -1,
+            userId: dto.userId ?? -1,
+            type: dto.type ?? '',
+            startDate: DateTime.tryParse(dto.startDate ?? '') ?? DateTime(1970),
+            endDate: DateTime.tryParse(dto.endDate ?? '') ?? DateTime(1970),
+            memberNote: dto.memberNote?.trim().isEmpty ?? true ? null : dto.memberNote,
+            admitterNote: dto.admitterNote?.trim().isEmpty ?? true ? null : dto.admitterNote,
+            status: status,
+          );
+        })
+        .skip(offset)
+        .take(limit)
+        .toList();
   }
 }

@@ -18,21 +18,18 @@ class GetAbsencesWithMembersUseCase {
 
   GetAbsencesWithMembersUseCase(this.absenceRepo, this.memberRepo);
 
-  Future<List<AbsenceWithMember>> execute() async {
-    final absences = await absenceRepo.getAllAbsences();
+  Future<List<AbsenceWithMember>> execute({int offset = 0, int limit = 10}) async {
+    final absences = await absenceRepo.getAllAbsences(offset: offset, limit: limit);
     final members = await memberRepo.getAllMembers();
 
+    // Create a map of userId to Member for quick lookup
     final memberMap = {for (var m in members) m.userId: m};
 
+    // Combine absences with corresponding members
     return absences.map((absence) {
       final member =
           memberMap[absence.userId] ??
-          Member(
-            userId: absence.userId,
-            name: "Unknown",
-            imageUrl: "", // or a placeholder image
-          );
-
+          Member(userId: absence.userId, name: "Unknown", imageUrl: "");
       return AbsenceWithMember(absence: absence, member: member);
     }).toList();
   }
