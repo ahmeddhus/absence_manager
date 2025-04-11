@@ -21,7 +21,12 @@ class AbsencesList extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index == absenceWithMember.length && hasMore) {
           // Load More Button
-          return Center(child: ElevatedButton(onPressed: onLoadMore, child: Text("Load More")));
+          return SafeArea(
+            child: Container(
+              margin: EdgeInsets.only(top: 16),
+              child: Center(child: ElevatedButton(onPressed: onLoadMore, child: Text("Load More"))),
+            ),
+          );
         }
 
         return AbsenceTile(data: absenceWithMember[index]);
