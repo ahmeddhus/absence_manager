@@ -7,13 +7,41 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   final GetAbsencesWithMembersUseCase useCase;
 
   AbsencesBloc(this.useCase) : super(AbsencesInitial()) {
+    // Initial load
     on<LoadAbsences>((event, emit) async {
       emit(AbsencesLoading());
       try {
-        final absences = await useCase.execute();
-        emit(AbsencesLoaded(absences));
+        final result = await useCase.execute(offset: 0, limit: 10);
+        emit(
+          AbsencesLoaded(
+            absences: result.absences,
+            hasMore: result.absences.length == 10,
+            totalCount: result.totalCount,
+          ),
+        );
       } catch (e) {
         emit(AbsencesError(e.toString()));
+      }
+    });
+
+    // Load more absences
+    on<LoadMoreAbsences>((event, emit) async {
+      final currentState = state;
+      if (currentState is AbsencesLoaded) {
+        emit(AbsencesLoadingMore());
+        try {
+          final result = await useCase.execute(offset: event.offset, limit: event.limit);
+          final hasMore = result.absences.length == event.limit;
+          emit(
+            AbsencesLoaded(
+              absences: currentState.absences + result.absences,
+              hasMore: hasMore,
+              totalCount: result.totalCount,
+            ),
+          );
+        } catch (e) {
+          emit(AbsencesError(e.toString()));
+        }
       }
     });
   }

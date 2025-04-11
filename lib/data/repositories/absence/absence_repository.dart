@@ -1,5 +1,5 @@
-import 'package:absence_manager/domain/models/absence/absence.dart';
+import 'package:absence_manager/domain/models/absence/absence_list.dart';
 
 abstract class AbsenceRepository {
-  Future<List<Absence>> getAllAbsences();
+  Future<AbsenceList> getAllAbsences({required int offset, required int limit});
 }

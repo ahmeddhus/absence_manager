@@ -3,13 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:absence_manager/data/repositories/absence/absence_repository.dart'
-    as _i2;
+    as _i3;
 import 'package:absence_manager/data/repositories/member/member_repository.dart'
     as _i5;
-import 'package:absence_manager/domain/models/absence/absence.dart' as _i4;
+import 'package:absence_manager/domain/models/absence/absence_list.dart' as _i2;
 import 'package:absence_manager/domain/models/member/member.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -27,21 +27,40 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeAbsenceList_0 extends _i1.SmartFake implements _i2.AbsenceList {
+  _FakeAbsenceList_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [AbsenceRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAbsenceRepository extends _i1.Mock implements _i2.AbsenceRepository {
+class MockAbsenceRepository extends _i1.Mock implements _i3.AbsenceRepository {
   MockAbsenceRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i4.Absence>> getAllAbsences() =>
+  _i4.Future<_i2.AbsenceList> getAllAbsences({
+    required int? offset,
+    required int? limit,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getAllAbsences, []),
-            returnValue: _i3.Future<List<_i4.Absence>>.value(<_i4.Absence>[]),
+            Invocation.method(#getAllAbsences, [], {
+              #offset: offset,
+              #limit: limit,
+            }),
+            returnValue: _i4.Future<_i2.AbsenceList>.value(
+              _FakeAbsenceList_0(
+                this,
+                Invocation.method(#getAllAbsences, [], {
+                  #offset: offset,
+                  #limit: limit,
+                }),
+              ),
+            ),
           )
-          as _i3.Future<List<_i4.Absence>>);
+          as _i4.Future<_i2.AbsenceList>);
 }
 
 /// A class which mocks [MemberRepository].
@@ -53,10 +72,10 @@ class MockMemberRepository extends _i1.Mock implements _i5.MemberRepository {
   }
 
   @override
-  _i3.Future<List<_i6.Member>> getAllMembers() =>
+  _i4.Future<List<_i6.Member>> getAllMembers() =>
       (super.noSuchMethod(
             Invocation.method(#getAllMembers, []),
-            returnValue: _i3.Future<List<_i6.Member>>.value(<_i6.Member>[]),
+            returnValue: _i4.Future<List<_i6.Member>>.value(<_i6.Member>[]),
           )
-          as _i3.Future<List<_i6.Member>>);
+          as _i4.Future<List<_i6.Member>>);
 }

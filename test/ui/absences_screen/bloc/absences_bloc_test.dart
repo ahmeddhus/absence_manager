@@ -1,4 +1,5 @@
 import 'package:absence_manager/domain/models/absence/absence.dart';
+import 'package:absence_manager/domain/models/absence_list_with_members.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
@@ -15,9 +16,15 @@ import 'absences_bloc_test.mocks.dart';
 
 void main() {
   late MockGetAbsencesWithMembersUseCase mockUseCase;
+  late AbsencesBloc absencesBloc;
 
   setUp(() {
     mockUseCase = MockGetAbsencesWithMembersUseCase();
+    absencesBloc = AbsencesBloc(mockUseCase);
+  });
+
+  tearDown(() {
+    absencesBloc.close();
   });
 
   final absence = Absence(
@@ -33,62 +40,100 @@ void main() {
 
   final member = Member(userId: 100, name: 'Alice', imageUrl: '');
 
-  final combined = [AbsenceWithMember(absence: absence, member: member)];
-
-  blocTest<AbsencesBloc, AbsencesState>(
-    'emits [Loading, Loaded] when use case succeeds',
-    build: () {
-      when(mockUseCase.execute()).thenAnswer((_) async => combined);
-      return AbsencesBloc(mockUseCase);
-    },
-    act: (bloc) => bloc.add(LoadAbsences()),
-    expect: () => [AbsencesLoading(), AbsencesLoaded(combined)],
+  final absenceListWithMembers = AbsenceListWithMembers(
+    totalCount: 1,
+    absences: [AbsenceWithMember(absence: absence, member: member)],
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [Loading, Loaded (empty)] when use case returns empty list',
+    'emits [AbsencesLoading, AbsencesLoaded] when LoadAbsences event is added',
     build: () {
-      when(mockUseCase.execute()).thenAnswer((_) async => []);
-      return AbsencesBloc(mockUseCase);
+      when(
+        mockUseCase.execute(offset: 0, limit: 10),
+      ).thenAnswer((_) async => absenceListWithMembers);
+      return absencesBloc;
     },
     act: (bloc) => bloc.add(LoadAbsences()),
-    expect: () => [AbsencesLoading(), AbsencesLoaded([])],
+    expect:
+        () => [
+          AbsencesLoading(),
+          AbsencesLoaded(
+            absences: absenceListWithMembers.absences,
+            hasMore: absenceListWithMembers.absences.length == 10,
+            totalCount: absenceListWithMembers.totalCount,
+          ),
+        ],
+    verify: (_) {
+      verify(mockUseCase.execute(offset: 0, limit: 10)).called(1);
+    },
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [Loading, Error] when use case throws',
+    'emits [AbsencesLoading, AbsencesError] when LoadAbsences event fails',
     build: () {
-      when(mockUseCase.execute()).thenThrow(Exception("Oops"));
-      return AbsencesBloc(mockUseCase);
+      when(
+        mockUseCase.execute(offset: 0, limit: 10),
+      ).thenThrow(Exception('Failed to fetch absences'));
+      return absencesBloc;
     },
     act: (bloc) => bloc.add(LoadAbsences()),
     expect: () => [AbsencesLoading(), isA<AbsencesError>()],
     verify: (_) {
-      verify(mockUseCase.execute()).called(1);
+      verify(mockUseCase.execute(offset: 0, limit: 10)).called(1);
     },
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'handles multiple LoadAbsences events sequentially',
+    'emits [AbsencesLoadingMore, AbsencesLoaded] when LoadMoreAbsences event is added',
     build: () {
-      when(mockUseCase.execute()).thenAnswer((_) async => combined);
-      return AbsencesBloc(mockUseCase);
+      final currentState = AbsencesLoaded(
+        absences: absenceListWithMembers.absences,
+        hasMore: true,
+        totalCount: absenceListWithMembers.totalCount,
+      );
+
+      absencesBloc.emit(currentState);
+
+      when(
+        mockUseCase.execute(offset: 10, limit: 10),
+      ).thenAnswer((_) async => absenceListWithMembers);
+      return absencesBloc;
     },
-    act: (bloc) async {
-      bloc.add(LoadAbsences());
-      await Future.delayed(const Duration(milliseconds: 10));
-      bloc.add(LoadAbsences());
-    },
-    wait: const Duration(milliseconds: 50),
+    act: (bloc) => bloc.add(LoadMoreAbsences(offset: 10, limit: 10)),
     expect:
         () => [
-          AbsencesLoading(),
-          AbsencesLoaded(combined),
-          AbsencesLoading(),
-          AbsencesLoaded(combined),
+          AbsencesLoadingMore(),
+          AbsencesLoaded(
+            absences: absenceListWithMembers.absences + absenceListWithMembers.absences,
+            hasMore: absenceListWithMembers.absences.length == 10,
+            totalCount: absenceListWithMembers.totalCount,
+          ),
         ],
     verify: (_) {
-      verify(mockUseCase.execute()).called(2);
+      verify(mockUseCase.execute(offset: 10, limit: 10)).called(1);
+    },
+  );
+
+  blocTest<AbsencesBloc, AbsencesState>(
+    'emits [AbsencesLoadingMore, AbsencesError] when LoadMoreAbsences fails',
+    build: () {
+      final currentState = AbsencesLoaded(
+        absences: absenceListWithMembers.absences,
+        hasMore: true,
+        totalCount: absenceListWithMembers.totalCount,
+      );
+
+      absencesBloc.emit(currentState);
+
+      when(
+        mockUseCase.execute(offset: 10, limit: 10),
+      ).thenThrow(Exception('Failed to fetch more absences'));
+      return absencesBloc;
+    },
+    act: (bloc) => bloc.add(LoadMoreAbsences(offset: 10, limit: 10)),
+    expect: () => [AbsencesLoadingMore(), isA<AbsencesError>()],
+    verify: (_) {
+      verify(mockUseCase.execute(offset: 10, limit: 10)).called(1);
     },
   );
 }
