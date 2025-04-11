@@ -18,6 +18,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+  # Use this command to run the code generator for models:
+  # dart run build_runner build --delete-conflicting-outputs
   build_runner: ^2.4.15
   freezed: ^3.0.6
   json_serializable: ^6.9.4
