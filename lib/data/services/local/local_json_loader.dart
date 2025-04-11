@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 class LocalJsonLoader {
   const LocalJsonLoader();
 
+  /// Loads a JSON file from assets and extracts a list under the given key (default: "payload").
   Future<List<dynamic>> loadJsonArray(String assetPath, {String arrayKey = 'payload'}) async {
     final jsonString = await rootBundle.loadString(assetPath);
     final decoded = json.decode(jsonString) as Map<String, dynamic>;
