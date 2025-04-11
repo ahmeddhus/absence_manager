@@ -19,6 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  mockito: ^5.4.5
 
   # Use this command to run the code generator for models:
   # dart run build_runner build --delete-conflicting-outputs
