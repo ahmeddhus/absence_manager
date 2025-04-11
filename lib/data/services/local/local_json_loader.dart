@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 class LocalJsonLoader {
-  const LocalJsonLoader();
+  final AssetBundle _bundle;
 
-  /// Loads a JSON file from assets and extracts a list under the given key (default: "payload").
+  LocalJsonLoader({AssetBundle? bundle}) : _bundle = bundle ?? rootBundle;
+
   Future<List<dynamic>> loadJsonArray(String assetPath, {String arrayKey = 'payload'}) async {
-    final jsonString = await rootBundle.loadString(assetPath);
+    final jsonString = await _bundle.loadString(assetPath);
     final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
     if (decoded[arrayKey] is List<dynamic>) {
