@@ -7,6 +7,7 @@ import 'package:absence_manager/data/services/local/local_absence_service.dart';
 // Services
 import 'package:absence_manager/data/services/local/local_json_loader.dart';
 import 'package:absence_manager/data/services/local/local_member_service.dart';
+import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
 import 'package:get_it/get_it.dart';
 
 final sl = GetIt.instance;
@@ -22,4 +23,9 @@ Future<void> setupLocator() async {
   // Repositories
   sl.registerLazySingleton<AbsenceRepository>(() => AbsenceLocalRepository(sl()));
   sl.registerLazySingleton<MemberRepository>(() => MemberLocalRepository(sl()));
+
+  // Use Cases
+  sl.registerLazySingleton(
+    () => GetAbsencesWithMembersUseCase(sl<AbsenceRepository>(), sl<MemberRepository>()),
+  );
 }
