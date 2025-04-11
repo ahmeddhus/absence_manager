@@ -8,6 +8,11 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  flutter_bloc: ^9.1.0
+
+  # For value-based equality in Bloc states/events
+  equatable: ^2.0.7
+  
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
