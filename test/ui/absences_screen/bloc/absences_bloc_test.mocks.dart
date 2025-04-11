@@ -72,9 +72,12 @@ class MockGetAbsencesWithMembersUseCase extends _i1.Mock
           as _i3.MemberRepository);
 
   @override
-  _i5.Future<List<_i6.AbsenceWithMember>> execute() =>
+  _i5.Future<List<_i6.AbsenceWithMember>> execute({
+    int? offset = 0,
+    int? limit = 10,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#execute, [], {#offset: offset, #limit: limit}),
             returnValue: _i5.Future<List<_i6.AbsenceWithMember>>.value(
               <_i6.AbsenceWithMember>[],
             ),

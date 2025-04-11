@@ -6,3 +6,13 @@ abstract class AbsencesEvent extends Equatable {
 }
 
 class LoadAbsences extends AbsencesEvent {}
+
+class LoadMoreAbsences extends AbsencesEvent {
+  final int offset;
+  final int limit;
+
+  LoadMoreAbsences({required this.offset, required this.limit});
+
+  @override
+  List<Object?> get props => [offset, limit];
+}
