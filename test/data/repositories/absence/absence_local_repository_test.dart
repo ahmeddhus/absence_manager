@@ -44,9 +44,10 @@ void main() {
       final result = await repository.getAllAbsences(offset: 10, limit: 5);
 
       // Assert
-      expect(result, hasLength(5));
-      expect(result.first.id, 10);
-      expect(result.last.id, 14);
+      expect(result.totalCount, 20);
+      expect(result.absences, hasLength(5));
+      expect(result.absences.first.id, 10);
+      expect(result.absences.last.id, 14);
     });
 
     test('returns an empty list when offset exceeds data length', () async {
@@ -75,7 +76,8 @@ void main() {
       final result = await repository.getAllAbsences(offset: 20, limit: 5);
 
       // Assert
-      expect(result, isEmpty);
+      expect(result.totalCount, 10);
+      expect(result.absences, isEmpty);
     });
 
     test('returns the first 10 absences by default', () async {
@@ -104,9 +106,10 @@ void main() {
       final result = await repository.getAllAbsences();
 
       // Assert
-      expect(result, hasLength(10));
-      expect(result.first.id, 0);
-      expect(result.last.id, 9);
+      expect(result.totalCount, 15);
+      expect(result.absences, hasLength(10));
+      expect(result.absences.first.id, 0);
+      expect(result.absences.last.id, 9);
     });
 
     test('handles null fields gracefully with pagination', () async {
@@ -132,8 +135,9 @@ void main() {
       final result = await repository.getAllAbsences(offset: 0, limit: 1);
 
       // Assert
-      expect(result.length, 1);
-      final absence = result.first;
+      expect(result.totalCount, 1);
+      expect(result.absences, hasLength(1));
+      final absence = result.absences.first;
       expect(absence.startDate, DateTime(1970));
       expect(absence.endDate, DateTime(1970));
       expect(absence.memberNote, isNull);

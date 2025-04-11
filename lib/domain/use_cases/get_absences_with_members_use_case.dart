@@ -1,5 +1,6 @@
 import 'package:absence_manager/data/repositories/absence/absence_repository.dart';
 import 'package:absence_manager/data/repositories/member/member_repository.dart';
+import 'package:absence_manager/domain/models/absence_list_with_members.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
 
@@ -18,19 +19,26 @@ class GetAbsencesWithMembersUseCase {
 
   GetAbsencesWithMembersUseCase(this.absenceRepo, this.memberRepo);
 
-  Future<List<AbsenceWithMember>> execute({int offset = 0, int limit = 10}) async {
-    final absences = await absenceRepo.getAllAbsences(offset: offset, limit: limit);
+  Future<AbsenceListWithMembers> execute({int offset = 0, int limit = 10}) async {
+    final absenceList = await absenceRepo.getAllAbsences(offset: offset, limit: limit);
     final members = await memberRepo.getAllMembers();
 
     // Create a map of userId to Member for quick lookup
     final memberMap = {for (var m in members) m.userId: m};
 
     // Combine absences with corresponding members
-    return absences.map((absence) {
-      final member =
-          memberMap[absence.userId] ??
-          Member(userId: absence.userId, name: "Unknown", imageUrl: "");
-      return AbsenceWithMember(absence: absence, member: member);
-    }).toList();
+    final absencesWithMembers =
+        absenceList.absences.map((absence) {
+          final member =
+              memberMap[absence.userId] ??
+              Member(userId: absence.userId, name: "Unknown", imageUrl: "");
+          return AbsenceWithMember(absence: absence, member: member);
+        }).toList();
+
+    // Return totalCount and combined absences
+    return AbsenceListWithMembers(
+      totalCount: absenceList.totalCount,
+      absences: absencesWithMembers,
+    );
   }
 }
