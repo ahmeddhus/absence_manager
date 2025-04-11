@@ -27,7 +27,10 @@ class AbsencesScreen extends StatelessWidget {
               },
             );
           } else if (state is AbsencesError) {
-            return Center(child: Text("Error: ${state.message}"));
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Center(child: Text("Error: ${state.message}", textAlign: TextAlign.center)),
+            );
           }
           return const SizedBox.shrink(); // AbsencesInitial
         },
