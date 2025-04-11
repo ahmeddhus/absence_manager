@@ -11,6 +11,10 @@ class AbsenceLocalRepository implements AbsenceRepository {
   Future<List<Absence>> getAllAbsences() async {
     final apiAbsences = await service.fetchAbsences();
     return apiAbsences.map((dto) {
+      // Determine status based on timestamps:
+      // If confirmedAt is present → Confirmed
+      // Else if rejectedAt is present → Rejected
+      // Otherwise → Requested
       final status =
           dto.confirmedAt != null
               ? AbsenceStatus.confirmed
