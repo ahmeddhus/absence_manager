@@ -13,24 +13,25 @@ A Flutter application to manage and display employee absences. It includes featu
 - [x] Define branch naming conventions in `README.md`
 
 ### Core Requirements
-- [ ] Display a list of absences including employee names
+- [x] Display a list of absences including employee names
 - [ ] Show the first 10 absences with pagination
 - [ ] Display the total number of absences
+- [x] Add unit tests for data, domain, UI, and utility layers
 
 #### For each absence, display:
-- [ ] Member name
-- [ ] Type of absence
-- [ ] Period (start and end date)
-- [ ] Member note (when available)
-- [ ] Status (`Requested`, `Confirmed`, or `Rejected`)
-- [ ] Admitter note (when available)
+- [x] Member name
+- [x] Type of absence
+- [x] Period (start and end date)
+- [x] Member note (when available)
+- [x] Status (`Requested`, `Confirmed`, or `Rejected`)
+- [x] Admitter note (when available)
 
 ### Filters & UI States
 - [ ] Filter absences by type
 - [ ] Filter absences by date
-- [ ] Show a loading state while data is being fetched
-- [ ] Show an error state if the list fails to load
-- [ ] Show an empty state if no results are found
+- [x] Show a loading state while data is being fetched
+- [x] Show an error state if the list fails to load
+- [x] Show an empty state if no results are found
 
 ### Bonus Features
 - [ ] Generate an iCal file to import into Outlook
