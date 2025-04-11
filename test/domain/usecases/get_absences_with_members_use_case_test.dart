@@ -49,11 +49,11 @@ void main() {
     expect(result.first.member.name, "Alice");
   });
 
-  test('throws Exception if member is missing for an absence', () async {
+  test('uses fallback "Unknown" member when member is missing', () async {
     final absences = [
       Absence(
         id: 2,
-        userId: 999,
+        userId: 999, // userId not in member list
         type: "sickness",
         startDate: DateTime(2021, 2, 1),
         endDate: DateTime(2021, 2, 3),
@@ -68,7 +68,11 @@ void main() {
     when(mockAbsenceRepo.getAllAbsences()).thenAnswer((_) async => absences);
     when(mockMemberRepo.getAllMembers()).thenAnswer((_) async => members);
 
-    expect(() => useCase.execute(), throwsA(isA<Exception>()));
+    final result = await useCase.execute();
+
+    expect(result.length, 1);
+    expect(result.first.absence.userId, 999);
+    expect(result.first.member.name, "Unknown");
   });
 
   test('returns empty list when no absences exist', () async {
@@ -82,7 +86,7 @@ void main() {
     expect(result, isEmpty);
   });
 
-  test('throws Exception if member list is empty', () async {
+  test('uses fallback "Unknown" for all absences if member list is empty', () async {
     final absences = [
       Absence(
         id: 3,
@@ -99,6 +103,10 @@ void main() {
     when(mockAbsenceRepo.getAllAbsences()).thenAnswer((_) async => absences);
     when(mockMemberRepo.getAllMembers()).thenAnswer((_) async => []);
 
-    expect(() => useCase.execute(), throwsException);
+    final result = await useCase.execute();
+
+    expect(result.length, 1);
+    expect(result.first.member.name, "Unknown");
+    expect(result.first.member.userId, 101); // fallback still keeps the userId
   });
 }
