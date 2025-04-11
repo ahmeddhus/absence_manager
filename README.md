@@ -15,7 +15,7 @@ A Flutter application to manage and display employee absences. It includes featu
 ### Core Requirements
 - [x] Display a list of absences including employee names
 - [x] Show the first 10 absences with pagination
-- [ ] Display the total number of absences
+- [x] Display the total number of absences
 - [x] Add unit tests for data, domain, UI, and utility layers
 
 #### For each absence, display:
