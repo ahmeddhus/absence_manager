@@ -12,7 +12,12 @@ class AbsenceTile extends StatelessWidget {
     final member = data.member;
 
     return ListTile(
-      leading: CircleAvatar(backgroundImage: NetworkImage(member.imageUrl)),
+      leading: CircleAvatar(
+        backgroundImage:
+            data.member.imageUrl.isNotEmpty ? NetworkImage(data.member.imageUrl) : null,
+        child: data.member.imageUrl.isEmpty ? const Icon(Icons.person_outline) : null,
+      ),
+
       title: Text(member.name),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
