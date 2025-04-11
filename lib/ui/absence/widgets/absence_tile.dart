@@ -1,0 +1,35 @@
+import 'package:absence_manager/domain/models/absence_with_member.dart';
+import 'package:flutter/material.dart';
+
+class AbsenceTile extends StatelessWidget {
+  final AbsenceWithMember data;
+
+  const AbsenceTile({super.key, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    final absence = data.absence;
+    final member = data.member;
+
+    return ListTile(
+      leading: CircleAvatar(backgroundImage: NetworkImage(member.imageUrl)),
+      title: Text(member.name),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Type: ${absence.type}"),
+          Text("Period: ${_formatDate(absence.startDate)} → ${_formatDate(absence.endDate)}"),
+          if (absence.memberNote?.isNotEmpty ?? false) Text("Member note: ${absence.memberNote}"),
+          if (absence.admitterNote?.isNotEmpty ?? false)
+            Text("Admitter note: ${absence.admitterNote}"),
+          Text("Status: ${absence.status.name}"),
+        ],
+      ),
+      isThreeLine: true,
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+}
