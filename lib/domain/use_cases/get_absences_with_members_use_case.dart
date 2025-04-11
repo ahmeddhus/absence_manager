@@ -1,6 +1,7 @@
 import 'package:absence_manager/data/repositories/absence/absence_repository.dart';
 import 'package:absence_manager/data/repositories/member/member_repository.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
+import 'package:absence_manager/domain/models/member/member.dart';
 
 /// Use case for retrieving all absences enriched with their corresponding member data.
 ///
@@ -24,12 +25,13 @@ class GetAbsencesWithMembersUseCase {
     final memberMap = {for (var m in members) m.userId: m};
 
     return absences.map((absence) {
-      final member = memberMap[absence.userId];
-
-      if (member == null) {
-        // Handle gracefully or log if needed
-        throw Exception("Member with userId ${absence.userId} not found.");
-      }
+      final member =
+          memberMap[absence.userId] ??
+          Member(
+            userId: absence.userId,
+            name: "Unknown",
+            imageUrl: "", // or a placeholder image
+          );
 
       return AbsenceWithMember(absence: absence, member: member);
     }).toList();
