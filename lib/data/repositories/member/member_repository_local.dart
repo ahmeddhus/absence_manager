@@ -11,7 +11,7 @@ class MemberLocalRepository implements MemberRepository {
   Future<List<Member>> getAllMembers() async {
     final apiMembers = await service.fetchMembers();
     return apiMembers.map((dto) {
-      return Member(userId: dto.userId ?? -1, name: dto.name ?? '', imageUrl: dto.image ?? '');
+      return Member(userId: dto.userId, name: dto.name ?? '', imageUrl: dto.image ?? '');
     }).toList();
   }
 }

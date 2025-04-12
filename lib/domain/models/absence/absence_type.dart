@@ -1,4 +1,4 @@
-enum AbsenceType { vacation, sickness, none }
+enum AbsenceType { vacation, sickness, other }
 
 // Use Dart-style enum extension naming (e.g., ThemeModeX, LocaleX) for consistency
 extension AbsenceTypeX on AbsenceType {
@@ -9,7 +9,7 @@ extension AbsenceTypeX on AbsenceType {
       case 'sickness':
         return AbsenceType.sickness;
       default:
-        return AbsenceType.none;
+        return AbsenceType.other;
     }
   }
 
@@ -19,8 +19,8 @@ extension AbsenceTypeX on AbsenceType {
         return 'Vacation';
       case AbsenceType.sickness:
         return 'Sickness';
-      case AbsenceType.none:
-        return 'Unknown';
+      case AbsenceType.other:
+        return 'Other';
     }
   }
 }

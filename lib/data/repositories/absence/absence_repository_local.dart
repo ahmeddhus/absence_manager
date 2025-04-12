@@ -25,13 +25,13 @@ class AbsenceLocalRepository implements AbsenceRepository {
                       : AbsenceStatus.requested;
 
               return Absence(
-                id: dto.id ?? -1,
-                userId: dto.userId ?? -1,
+                id: dto.id,
+                userId: dto.userId,
                 type: AbsenceTypeX.fromString(dto.type),
-                startDate: DateTime.tryParse(dto.startDate ?? '') ?? DateTime(1970),
-                endDate: DateTime.tryParse(dto.endDate ?? '') ?? DateTime(1970),
-                memberNote: dto.memberNote?.trim().isEmpty ?? true ? null : dto.memberNote,
-                admitterNote: dto.admitterNote?.trim().isEmpty ?? true ? null : dto.admitterNote,
+                startDate: DateTime.tryParse(dto.startDate ?? ''),
+                endDate: DateTime.tryParse(dto.endDate ?? ''),
+                memberNote: dto.memberNote?.trim().isNotEmpty == true ? dto.memberNote : null,
+                admitterNote: dto.admitterNote?.trim().isNotEmpty == true ? dto.admitterNote : null,
                 status: status,
               );
             })

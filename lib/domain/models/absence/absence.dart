@@ -6,11 +6,11 @@
 import 'package:absence_manager/domain/models/absence/absence_type.dart';
 
 class Absence {
-  final int id;
-  final int userId;
-  final AbsenceType type; // 'vacation', 'sickness'
-  final DateTime startDate;
-  final DateTime endDate;
+  final int? id;
+  final int? userId;
+  final AbsenceType? type; // 'vacation', 'sickness'
+  final DateTime? startDate;
+  final DateTime? endDate;
   final String? memberNote;
   final String? admitterNote;
   final AbsenceStatus status;
