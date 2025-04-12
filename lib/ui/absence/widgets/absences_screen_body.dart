@@ -14,6 +14,7 @@ class AbsencesScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Stack(
       children: [
         Column(
@@ -71,7 +72,7 @@ class AbsencesScreenBody extends StatelessWidget {
 
         if (state.isExporting)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: colorScheme.onSurface.withValues(alpha: 0.3),
             child: const Center(child: CircularProgressIndicator()),
           ),
       ],

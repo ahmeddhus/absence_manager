@@ -8,6 +8,8 @@ class AbsencesSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
@@ -21,7 +23,10 @@ class AbsencesSummary extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Total Absences", style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                  Text(
+                    "Total Absences",
+                    style: TextStyle(fontSize: 14, color: colorScheme.secondary),
+                  ),
                   Text(
                     "$totalAbsences",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -31,7 +36,7 @@ class AbsencesSummary extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Fetched", style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                  Text("Fetched", style: TextStyle(fontSize: 14, color: colorScheme.secondary)),
                   Text(
                     "$fetchedAbsences",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
