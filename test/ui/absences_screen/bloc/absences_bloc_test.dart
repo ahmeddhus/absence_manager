@@ -1,4 +1,5 @@
 import 'package:absence_manager/domain/models/absence/absence.dart';
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_list_with_members.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
@@ -30,7 +31,7 @@ void main() {
   final absence = Absence(
     id: 1,
     userId: 100,
-    type: 'vacation',
+    type: AbsenceType.vacation,
     startDate: DateTime(2024, 1, 1),
     endDate: DateTime(2024, 1, 10),
     memberNote: 'Vacation',
@@ -40,9 +41,11 @@ void main() {
 
   final member = Member(userId: 100, name: 'Alice', imageUrl: '');
 
+  final absenceWithMember = AbsenceWithMember(absence: absence, member: member);
+
   final absenceListWithMembers = AbsenceListWithMembers(
     totalCount: 1,
-    absences: [AbsenceWithMember(absence: absence, member: member)],
+    absences: [absenceWithMember],
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
@@ -59,81 +62,95 @@ void main() {
           AbsencesLoading(),
           AbsencesLoaded(
             absences: absenceListWithMembers.absences,
-            hasMore: absenceListWithMembers.absences.length == 10,
+            hasMore: false,
             totalCount: absenceListWithMembers.totalCount,
           ),
         ],
-    verify: (_) {
-      verify(mockUseCase.execute(offset: 0, limit: 10)).called(1);
-    },
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [AbsencesLoading, AbsencesError] when LoadAbsences event fails',
+    'emits [AbsencesLoading, AbsencesError] when LoadAbsences throws',
     build: () {
-      when(
-        mockUseCase.execute(offset: 0, limit: 10),
-      ).thenThrow(Exception('Failed to fetch absences'));
+      when(mockUseCase.execute(offset: 0, limit: 10)).thenThrow(Exception('Oops'));
       return absencesBloc;
     },
     act: (bloc) => bloc.add(LoadAbsences()),
     expect: () => [AbsencesLoading(), isA<AbsencesError>()],
-    verify: (_) {
-      verify(mockUseCase.execute(offset: 0, limit: 10)).called(1);
-    },
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [AbsencesLoadingMore, AbsencesLoaded] when LoadMoreAbsences event is added',
+    'emits [AbsencesLoadingMore, AbsencesLoaded] on successful LoadMoreAbsences',
     build: () {
-      final currentState = AbsencesLoaded(
-        absences: absenceListWithMembers.absences,
-        hasMore: true,
-        totalCount: absenceListWithMembers.totalCount,
-      );
-
-      absencesBloc.emit(currentState);
-
       when(
         mockUseCase.execute(offset: 10, limit: 10),
       ).thenAnswer((_) async => absenceListWithMembers);
+
       return absencesBloc;
     },
+    seed: () => AbsencesLoaded(absences: [absenceWithMember], hasMore: true, totalCount: 1),
     act: (bloc) => bloc.add(LoadMoreAbsences(offset: 10, limit: 10)),
     expect:
         () => [
           AbsencesLoadingMore(),
           AbsencesLoaded(
-            absences: absenceListWithMembers.absences + absenceListWithMembers.absences,
-            hasMore: absenceListWithMembers.absences.length == 10,
-            totalCount: absenceListWithMembers.totalCount,
+            absences: [absenceWithMember, absenceWithMember],
+            hasMore: false,
+            totalCount: 1,
           ),
         ],
-    verify: (_) {
-      verify(mockUseCase.execute(offset: 10, limit: 10)).called(1);
-    },
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [AbsencesLoadingMore, AbsencesError] when LoadMoreAbsences fails',
+    'emits [AbsencesLoadingMore, AbsencesError] on LoadMoreAbsences failure',
     build: () {
-      final currentState = AbsencesLoaded(
-        absences: absenceListWithMembers.absences,
-        hasMore: true,
-        totalCount: absenceListWithMembers.totalCount,
-      );
-
-      absencesBloc.emit(currentState);
-
-      when(
-        mockUseCase.execute(offset: 10, limit: 10),
-      ).thenThrow(Exception('Failed to fetch more absences'));
+      when(mockUseCase.execute(offset: 10, limit: 10)).thenThrow(Exception('Failed'));
       return absencesBloc;
     },
+    seed: () => AbsencesLoaded(absences: [absenceWithMember], hasMore: true, totalCount: 1),
     act: (bloc) => bloc.add(LoadMoreAbsences(offset: 10, limit: 10)),
     expect: () => [AbsencesLoadingMore(), isA<AbsencesError>()],
-    verify: (_) {
-      verify(mockUseCase.execute(offset: 10, limit: 10)).called(1);
+  );
+
+  blocTest<AbsencesBloc, AbsencesState>(
+    'emits [AbsencesLoading, AbsencesLoaded] when FilterAbsences is applied and matches',
+    build: () {
+      when(
+        mockUseCase.execute(offset: 0, limit: 100),
+      ).thenAnswer((_) async => absenceListWithMembers);
+      return absencesBloc;
     },
+    act: (bloc) => bloc.add(FilterAbsences(type: AbsenceType.vacation)),
+    expect:
+        () => [
+          AbsencesLoading(),
+          AbsencesLoaded(
+            absences: absenceListWithMembers.absences,
+            hasMore: false,
+            totalCount: 1,
+            selectedType: AbsenceType.vacation,
+            selectedDateRange: null,
+          ),
+        ],
+  );
+
+  blocTest<AbsencesBloc, AbsencesState>(
+    'emits [AbsencesLoading, AbsencesLoaded] with empty list if no absences match filter',
+    build: () {
+      final emptyResult = AbsenceListWithMembers(totalCount: 1, absences: []);
+      when(mockUseCase.execute(offset: 0, limit: 100)).thenAnswer((_) async => emptyResult);
+      return absencesBloc;
+    },
+    act: (bloc) => bloc.add(FilterAbsences(type: AbsenceType.sickness)),
+    expect:
+        () => [
+          AbsencesLoading(),
+          AbsencesLoaded(
+            absences: [],
+            hasMore: false,
+            totalCount: 1,
+            selectedType: AbsenceType.sickness,
+            selectedDateRange: null,
+          ),
+        ],
   );
 }

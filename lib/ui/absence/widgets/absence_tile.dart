@@ -1,3 +1,4 @@
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class AbsenceTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Type: ${absence.type}"),
+          Text("Type: ${absence.type.label}"),
           Text("Period: ${_formatDate(absence.startDate)} → ${_formatDate(absence.endDate)}"),
           if (absence.memberNote?.isNotEmpty ?? false) Text("Member note: ${absence.memberNote}"),
           if (absence.admitterNote?.isNotEmpty ?? false)

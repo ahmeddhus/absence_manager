@@ -3,10 +3,12 @@
 // to keep the domain layer decoupled from dependencies and tooling,
 // as per clean architecture principles.
 
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
+
 class Absence {
   final int id;
   final int userId;
-  final String type; // 'vacation', 'sickness'
+  final AbsenceType type; // 'vacation', 'sickness'
   final DateTime startDate;
   final DateTime endDate;
   final String? memberNote;

@@ -1,6 +1,7 @@
 import 'package:absence_manager/ui/absence/bloc/absence_bloc.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_event.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_state.dart';
+import 'package:absence_manager/ui/absence/widgets/absence_filter_section.dart';
 import 'package:absence_manager/ui/absence/widgets/absences_list.dart';
 import 'package:absence_manager/ui/absence/widgets/absences_summary.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,20 @@ class AbsencesScreen extends StatelessWidget {
                 AbsencesSummary(
                   totalAbsences: state.totalCount,
                   fetchedAbsences: state.absences.length,
+                ),
+                AbsenceFilterSection(
+                  selectedType: state.selectedType,
+                  selectedRange: state.selectedDateRange,
+                  onTypeChanged: (type) {
+                    context.read<AbsencesBloc>().add(
+                      FilterAbsences(type: type, dateRange: state.selectedDateRange),
+                    );
+                  },
+                  onDateRangeChanged: (range) {
+                    context.read<AbsencesBloc>().add(
+                      FilterAbsences(type: state.selectedType, dateRange: range),
+                    );
+                  },
                 ),
                 Expanded(
                   child: AbsencesList(

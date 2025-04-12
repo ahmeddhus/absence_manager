@@ -27,8 +27,8 @@ A Flutter application to manage and display employee absences. It includes featu
 - [x] Admitter note (when available)
 
 ### Filters & UI States
-- [ ] Filter absences by type
-- [ ] Filter absences by date
+- [x] Filter absences by type
+- [x] Filter absences by date
 - [x] Show a loading state while data is being fetched
 - [x] Show an error state if the list fails to load
 - [x] Show an empty state if no results are found
