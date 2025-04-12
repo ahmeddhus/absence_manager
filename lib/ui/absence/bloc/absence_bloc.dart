@@ -1,4 +1,5 @@
 import 'package:absence_manager/domain/models/absence/absence_type.dart';
+import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_event.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_state.dart';
@@ -18,14 +19,11 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       emit(AbsencesLoading());
       try {
         final result = await useCase.execute(offset: 0, limit: 10);
-        emit(
-          AbsencesLoaded(
-            absences: result.absences,
-            hasMore: result.absences.length == 10,
-            totalCount: result.totalCount,
-            selectedType: _selectedType,
-            selectedDateRange: _selectedDateRange,
-          ),
+        _emitLoaded(
+          emit,
+          result.absences,
+          hasMore: result.absences.length == 10,
+          totalCount: result.totalCount,
         );
       } catch (e) {
         emit(AbsencesError(e.toString()));
@@ -41,32 +39,9 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
 
       try {
         final result = await useCase.execute(offset: 0, limit: 100);
+        final filtered = result.absences.where(_matchesCurrentFilters).toList();
 
-        // Filters absences: keeps only those that match the selected type (if any)
-        // and have both start and end dates within the selected date range (if any)
-        final filtered =
-            result.absences.where((a) {
-              final matchesType = _selectedType == null || a.absence.type == _selectedType;
-              final matchesDate =
-                  _selectedDateRange == null ||
-                  (a.absence.startDate.isAfter(
-                        _selectedDateRange!.start.subtract(const Duration(days: 1)),
-                      ) &&
-                      a.absence.endDate.isBefore(
-                        _selectedDateRange!.end.add(const Duration(days: 1)),
-                      ));
-              return matchesType && matchesDate;
-            }).toList();
-
-        emit(
-          AbsencesLoaded(
-            absences: filtered,
-            hasMore: false,
-            totalCount: result.totalCount,
-            selectedType: _selectedType,
-            selectedDateRange: _selectedDateRange,
-          ),
-        );
+        _emitLoaded(emit, filtered, hasMore: false, totalCount: result.totalCount);
       } catch (e) {
         emit(AbsencesError(e.toString()));
       }
@@ -79,38 +54,53 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
         emit(AbsencesLoadingMore());
         try {
           final result = await useCase.execute(offset: event.offset, limit: event.limit);
-          final hasMore = result.absences.length == event.limit;
+          final filteredNew = result.absences.where(_matchesCurrentFilters).toList();
+          final combined = currentState.absences + filteredNew;
 
-          // Merge newly fetched absences with existing ones,
-          // applying current type and date filters to the new items only
-          final combined =
-              currentState.absences +
-              result.absences.where((a) {
-                final matchesType = _selectedType == null || a.absence.type == _selectedType;
-                final matchesDate =
-                    _selectedDateRange == null ||
-                    (a.absence.startDate.isAfter(
-                          _selectedDateRange!.start.subtract(const Duration(days: 1)),
-                        ) &&
-                        a.absence.endDate.isBefore(
-                          _selectedDateRange!.end.add(const Duration(days: 1)),
-                        ));
-                return matchesType && matchesDate;
-              }).toList();
-
-          emit(
-            AbsencesLoaded(
-              absences: combined,
-              hasMore: hasMore,
-              totalCount: result.totalCount,
-              selectedType: _selectedType,
-              selectedDateRange: _selectedDateRange,
-            ),
+          _emitLoaded(
+            emit,
+            combined,
+            hasMore: result.absences.length == event.limit,
+            totalCount: result.totalCount,
           );
         } catch (e) {
           emit(AbsencesError(e.toString()));
         }
       }
     });
+  }
+
+  /// Reusable method to check if an absence matches the active filters
+  bool _matchesCurrentFilters(AbsenceWithMember a) {
+    final matchesType = _selectedType == null || a.absence.type == _selectedType;
+
+    final matchesDate =
+        _selectedDateRange == null ||
+        (a.absence.startDate != null &&
+            a.absence.endDate != null &&
+            a.absence.startDate!.isAfter(
+              _selectedDateRange!.start.subtract(const Duration(days: 1)),
+            ) &&
+            a.absence.endDate!.isBefore(_selectedDateRange!.end.add(const Duration(days: 1))));
+
+    return matchesType && matchesDate;
+  }
+
+  /// Emit AbsencesLoaded state using consistent structure
+  void _emitLoaded(
+    Emitter<AbsencesState> emit,
+    List<AbsenceWithMember> absences, {
+    required bool hasMore,
+    required int totalCount,
+  }) {
+    emit(
+      AbsencesLoaded(
+        absences: absences,
+        hasMore: hasMore,
+        totalCount: totalCount,
+        selectedType: _selectedType,
+        selectedDateRange: _selectedDateRange,
+      ),
+    );
   }
 }
