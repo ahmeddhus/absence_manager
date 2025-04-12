@@ -28,3 +28,13 @@ class FilterAbsences extends AbsencesEvent {
   @override
   List<Object?> get props => [type, dateRange];
 }
+
+class ExportAbsencesToICal extends AbsencesEvent {
+  final void Function(String filePath)? onExportSuccess;
+  final void Function(String error)? onExportError;
+
+  ExportAbsencesToICal({this.onExportSuccess, this.onExportError});
+
+  @override
+  List<Object?> get props => [];
+}
