@@ -2,6 +2,7 @@ import 'package:absence_manager/data/repositories/absence/absence_repository.dar
 import 'package:absence_manager/data/services/local/local_absence_service.dart';
 import 'package:absence_manager/domain/models/absence/absence.dart';
 import 'package:absence_manager/domain/models/absence/absence_list.dart';
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 
 class AbsenceLocalRepository implements AbsenceRepository {
   final LocalAbsenceService service;
@@ -26,7 +27,7 @@ class AbsenceLocalRepository implements AbsenceRepository {
               return Absence(
                 id: dto.id ?? -1,
                 userId: dto.userId ?? -1,
-                type: dto.type ?? '',
+                type: AbsenceTypeX.fromString(dto.type),
                 startDate: DateTime.tryParse(dto.startDate ?? '') ?? DateTime(1970),
                 endDate: DateTime.tryParse(dto.endDate ?? '') ?? DateTime(1970),
                 memberNote: dto.memberNote?.trim().isEmpty ?? true ? null : dto.memberNote,
