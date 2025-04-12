@@ -13,18 +13,35 @@ class AbsencesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Absences")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<AbsencesBloc>().add(
-            ExportAbsencesToICal(
-              onExportSuccess: (filePath) => Share.shareXFiles([XFile(filePath)]),
-              onExportError: (error) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
-              },
+      floatingActionButton: BlocBuilder<AbsencesBloc, AbsencesState>(
+        builder: (context, state) {
+          final bool isEnabled = state is AbsencesLoaded && state.absences.isNotEmpty;
+          final colorScheme = Theme.of(context).colorScheme;
+
+          return FloatingActionButton(
+            onPressed:
+                isEnabled
+                    ? () {
+                      context.read<AbsencesBloc>().add(
+                        ExportAbsencesToICal(
+                          onExportSuccess: (filePath) => Share.shareXFiles([XFile(filePath)]),
+                          onExportError: (error) {
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(error)));
+                          },
+                        ),
+                      );
+                    }
+                    : null,
+            backgroundColor:
+                isEnabled ? colorScheme.primaryContainer : colorScheme.primaryContainer,
+            child: Icon(
+              Icons.share,
+              color: isEnabled ? colorScheme.primary : colorScheme.primary.withValues(alpha: 0.3),
             ),
           );
         },
-        child: const Icon(Icons.share),
       ),
       body: BlocBuilder<AbsencesBloc, AbsencesState>(
         builder: (context, state) {
