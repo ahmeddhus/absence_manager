@@ -4,7 +4,7 @@
 // as per clean architecture principles.
 
 class Member {
-  final int userId;
+  final int? userId;
   final String name;
   final String imageUrl;
 
