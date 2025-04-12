@@ -1,3 +1,4 @@
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class LoadMoreAbsences extends AbsencesEvent {
 }
 
 class FilterAbsences extends AbsencesEvent {
-  final String? type; // e.g., 'vacation', 'sickness'
+  final AbsenceType? type; // e.g., 'vacation', 'sickness'
   final DateTimeRange? dateRange;
 
   FilterAbsences({this.type, this.dateRange});

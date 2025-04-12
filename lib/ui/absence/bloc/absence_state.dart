@@ -1,3 +1,4 @@
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class AbsencesLoaded extends AbsencesState {
   final List<AbsenceWithMember> absences;
   final bool hasMore;
   final int totalCount;
-  final String? selectedType;
+  final AbsenceType? selectedType;
   final DateTimeRange? selectedDateRange;
 
   AbsencesLoaded({

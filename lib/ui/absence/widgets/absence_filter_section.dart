@@ -1,9 +1,10 @@
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:flutter/material.dart';
 
 class AbsenceFilterSection extends StatelessWidget {
-  final String? selectedType;
+  final AbsenceType? selectedType;
   final DateTimeRange? selectedRange;
-  final void Function(String?) onTypeChanged;
+  final void Function(AbsenceType?) onTypeChanged;
   final void Function(DateTimeRange?) onDateRangeChanged;
 
   const AbsenceFilterSection({
@@ -21,13 +22,14 @@ class AbsenceFilterSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DropdownButtonFormField<String>(
+          DropdownButtonFormField<AbsenceType?>(
             value: selectedType,
             decoration: InputDecoration(labelText: "Type"),
-            items: const [
-              DropdownMenuItem(value: null, child: Text("All")),
-              DropdownMenuItem(value: 'vacation', child: Text("Vacation")),
-              DropdownMenuItem(value: 'sickness', child: Text("Sickness")),
+            items: [
+              const DropdownMenuItem(value: null, child: Text("All")),
+              ...AbsenceType.values.map(
+                (type) => DropdownMenuItem(value: type, child: Text(type.label)),
+              ),
             ],
             onChanged: onTypeChanged,
             isExpanded: true,
