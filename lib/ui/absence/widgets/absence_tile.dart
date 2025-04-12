@@ -23,7 +23,7 @@ class AbsenceTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Type: ${absence.type.label}"),
+          Text("Type: ${absence.type?.label}"),
           Text("Period: ${_formatDate(absence.startDate)} → ${_formatDate(absence.endDate)}"),
           if (absence.memberNote?.isNotEmpty ?? false) Text("Member note: ${absence.memberNote}"),
           if (absence.admitterNote?.isNotEmpty ?? false)
@@ -35,7 +35,8 @@ class AbsenceTile extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'N/A';
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 }
