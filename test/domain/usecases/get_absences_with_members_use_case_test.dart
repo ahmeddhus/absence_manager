@@ -2,6 +2,7 @@ import 'package:absence_manager/data/repositories/absence/absence_repository.dar
 import 'package:absence_manager/data/repositories/member/member_repository.dart';
 import 'package:absence_manager/domain/models/absence/absence.dart';
 import 'package:absence_manager/domain/models/absence/absence_list.dart';
+import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
@@ -29,7 +30,7 @@ void main() {
         Absence(
           id: 1,
           userId: 101,
-          type: "vacation",
+          type: AbsenceType.vacation,
           startDate: DateTime(2021, 1, 1),
           endDate: DateTime(2021, 1, 5),
           memberNote: "Ski trip",
@@ -39,7 +40,7 @@ void main() {
         Absence(
           id: 2,
           userId: 101,
-          type: "vacation",
+          type: AbsenceType.vacation,
           startDate: DateTime(2021, 1, 6),
           endDate: DateTime(2021, 1, 10),
           memberNote: "Ski trip",
@@ -71,7 +72,7 @@ void main() {
         Absence(
           id: 1,
           userId: 999,
-          type: "vacation",
+          type: AbsenceType.vacation,
           startDate: DateTime(2021, 1, 1),
           endDate: DateTime(2021, 1, 5),
           memberNote: "Unknown trip",
