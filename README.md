@@ -34,7 +34,7 @@ A Flutter application to manage and display employee absences. It includes featu
 - [x] Show an empty state if no results are found
 
 ### Bonus Features
-- [ ] Generate an iCal file to import into Outlook
+- [x] Generate an iCal file to import into Outlook
 - [ ] Create a small, separate API for serving local assets (simulating a backend)
 
 ---
