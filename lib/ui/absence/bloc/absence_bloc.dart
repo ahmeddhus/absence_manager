@@ -3,6 +3,7 @@ import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_event.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_state.dart';
+import 'package:absence_manager/util/i_cal_exporter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -65,6 +66,24 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
           );
         } catch (e) {
           emit(AbsencesError(e.toString()));
+        }
+      }
+    });
+
+    on<ExportAbsencesToICal>((event, emit) async {
+      final currentState = state;
+      if (currentState is AbsencesLoaded) {
+        emit(currentState.copyWith(isExporting: true));
+
+        try {
+          final file = await ICalExporter.generateICalFile(currentState.absences);
+          emit(currentState.copyWith(isExporting: false));
+
+          event.onExportSuccess?.call(file.path);
+        } catch (e) {
+          emit(currentState.copyWith(isExporting: false));
+
+          event.onExportError?.call('Export failed: ${e.toString()}');
         }
       }
     });

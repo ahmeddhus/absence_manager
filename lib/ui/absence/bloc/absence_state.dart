@@ -20,6 +20,7 @@ class AbsencesLoaded extends AbsencesState {
   final int totalCount;
   final AbsenceType? selectedType;
   final DateTimeRange? selectedDateRange;
+  final bool isExporting;
 
   AbsencesLoaded({
     required this.absences,
@@ -27,10 +28,36 @@ class AbsencesLoaded extends AbsencesState {
     required this.totalCount,
     this.selectedType,
     this.selectedDateRange,
+    this.isExporting = false,
   });
 
+  AbsencesLoaded copyWith({
+    List<AbsenceWithMember>? absences,
+    bool? hasMore,
+    int? totalCount,
+    AbsenceType? selectedType,
+    DateTimeRange? selectedDateRange,
+    bool? isExporting,
+  }) {
+    return AbsencesLoaded(
+      absences: absences ?? this.absences,
+      hasMore: hasMore ?? this.hasMore,
+      totalCount: totalCount ?? this.totalCount,
+      selectedType: selectedType ?? this.selectedType,
+      selectedDateRange: selectedDateRange ?? this.selectedDateRange,
+      isExporting: isExporting ?? this.isExporting,
+    );
+  }
+
   @override
-  List<Object?> get props => [absences, hasMore, totalCount, selectedType, selectedDateRange];
+  List<Object?> get props => [
+    absences,
+    hasMore,
+    totalCount,
+    selectedType,
+    selectedDateRange,
+    isExporting,
+  ];
 }
 
 class AbsencesError extends AbsencesState {
