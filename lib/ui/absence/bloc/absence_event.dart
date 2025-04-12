@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 abstract class AbsencesEvent extends Equatable {
   @override
@@ -15,4 +16,14 @@ class LoadMoreAbsences extends AbsencesEvent {
 
   @override
   List<Object?> get props => [offset, limit];
+}
+
+class FilterAbsences extends AbsencesEvent {
+  final String? type; // e.g., 'vacation', 'sickness'
+  final DateTimeRange? dateRange;
+
+  FilterAbsences({this.type, this.dateRange});
+
+  @override
+  List<Object?> get props => [type, dateRange];
 }
