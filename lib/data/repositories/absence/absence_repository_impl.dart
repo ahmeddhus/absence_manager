@@ -56,10 +56,11 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
               final matchType = type == null || a.type == type;
               final start = DateTime.tryParse(a.startDate ?? '');
               final end = DateTime.tryParse(a.endDate ?? '');
+
               final matchDate =
-                  (from == null ||
-                      (start?.isAfter(from.subtract(const Duration(days: 1))) ?? false)) &&
-                  (to == null || (end?.isBefore(to.add(const Duration(days: 1))) ?? false));
+                  (from == null || start?.isAfter(from.subtract(Duration(days: 1))) == true) &&
+                  (to == null || end?.isBefore(to.add(Duration(days: 1))) == true);
+
               return matchType && matchDate;
             }).toList();
 
