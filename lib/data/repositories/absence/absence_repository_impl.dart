@@ -43,20 +43,35 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
           to: to?.toIso8601String(),
         );
 
-        // Cache for offline use
+        // Cache deduplicated by ID
         await _localService.saveAbsences(absences.map((e) => e.toCacheModel()).toList());
 
         return AbsenceList(totalCount: total, absences: absences.map((e) => e.toDomain()).toList());
       } else {
-        // Load from cache if offline
+        // Offline fallback: filter, paginate, count from local cache
         final cached = await _localService.getCachedAbsences();
+
+        final filtered =
+            cached.where((a) {
+              final matchType = type == null || a.type == type;
+              final start = DateTime.tryParse(a.startDate ?? '');
+              final end = DateTime.tryParse(a.endDate ?? '');
+              final matchDate =
+                  (from == null ||
+                      (start?.isAfter(from.subtract(const Duration(days: 1))) ?? false)) &&
+                  (to == null || (end?.isBefore(to.add(const Duration(days: 1))) ?? false));
+              return matchType && matchDate;
+            }).toList();
+
+        final paginated = filtered.skip(offset).take(limit).toList();
+
         return AbsenceList(
-          totalCount: cached.length,
-          absences: cached.map((e) => e.toApiModel().toDomain()).toList(),
+          totalCount: filtered.length,
+          absences: paginated.map((e) => e.toApiModel().toDomain()).toList(),
         );
       }
     } catch (_) {
-      // Fallback to cache if API or local fails
+      // Fallback if both API and local loading fail
       final fallback = await _localService.getCachedAbsences();
       return AbsenceList(
         totalCount: fallback.length,

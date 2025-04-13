@@ -8,7 +8,7 @@ class MemberRemoteService {
   MemberRemoteService(this._httpClient);
 
   Future<List<MemberApiModel>> fetchMembers() async {
-    final data = await _httpClient.get(ApiConfig.absences);
+    final data = await _httpClient.get(ApiConfig.members);
 
     if (data is List) {
       return data.map((json) => MemberApiModel.fromJson(json)).toList();

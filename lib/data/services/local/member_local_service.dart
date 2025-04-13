@@ -4,13 +4,18 @@ import 'package:hive/hive.dart';
 class MemberLocalService {
   static const String _boxName = 'member_cache';
 
+  /// Save members by their userId as key to avoid duplication
   Future<void> saveMembers(List<MemberCacheModel> members) async {
     final box = await Hive.openBox<MemberCacheModel>(_boxName);
-    await box.clear();
-    await box.addAll(members);
+    for (final member in members) {
+      if (member.userId != null) {
+        await box.put(member.userId, member);
+      }
+    }
     await box.close();
   }
 
+  /// Get all cached members
   Future<List<MemberCacheModel>> getCachedMembers() async {
     final box = await Hive.openBox<MemberCacheModel>(_boxName);
     final list = box.values.toList();
