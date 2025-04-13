@@ -3,6 +3,10 @@ import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart';
 import 'package:absence_manager/util/i_cal_exporter.dart';
 import 'package:share_plus/share_plus.dart';
 
+/// Mobile implementation of [AbsenceExporter].
+///
+/// Generates a local .ics file and shares it using the `share_plus` plugin.
+
 AbsenceICalExporter createAbsenceExporter() => MobileAbsenceICalExporter();
 
 class MobileAbsenceICalExporter implements AbsenceICalExporter {

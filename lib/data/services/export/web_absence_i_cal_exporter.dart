@@ -4,6 +4,10 @@ import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart';
 import 'package:absence_manager/util/i_cal_exporter.dart';
 
+/// Web implementation of [AbsenceExporter].
+///
+/// Uses [AnchorElement] and [Blob] to trigger a browser download of the generated .ics file.
+
 AbsenceICalExporter createAbsenceExporter() => WebAbsenceICalExporter();
 
 class WebAbsenceICalExporter implements AbsenceICalExporter {

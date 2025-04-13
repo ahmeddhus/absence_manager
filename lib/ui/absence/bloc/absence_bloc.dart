@@ -16,7 +16,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   DateTimeRange? _selectedDateRange;
 
   AbsencesBloc(this.useCase, this.exporter) : super(AbsencesInitial()) {
-    // Handles initial data load (unfiltered)
+    /// Handles initial data load (unfiltered)
     on<LoadAbsences>((event, emit) async {
       emit(AbsencesLoading());
       try {
@@ -32,7 +32,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       }
     });
 
-    // Handles filtering by type and/or date
+    /// Handles filtering by type and/or date
     on<FilterAbsences>((event, emit) async {
       emit(AbsencesLoading());
 
@@ -49,7 +49,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       }
     });
 
-    // Handles pagination of data and applies existing filters to newly fetched results
+    /// Handles pagination of data and applies existing filters to newly fetched results
     on<LoadMoreAbsences>((event, emit) async {
       final currentState = state;
       if (currentState is AbsencesLoaded) {
@@ -71,6 +71,9 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       }
     });
 
+    /// Handles exporting absences to iCal using the injected [AbsenceExporter].
+    /// Emits `isExporting: true` while the export is in progress.
+    /// On completion, emits `isExporting: false` and triggers [onExportResult] callback.
     on<ExportAbsencesToICal>((event, emit) async {
       final currentState = state;
       if (currentState is AbsencesLoaded) {
