@@ -1,5 +1,6 @@
 // Repositories
 import 'package:absence_manager/core/network/http_client.dart';
+import 'package:absence_manager/core/network/network_checker.dart';
 import 'package:absence_manager/data/repositories/absence/absence_repository.dart';
 import 'package:absence_manager/data/repositories/absence/absence_repository_impl.dart';
 import 'package:absence_manager/data/repositories/member/member_repository.dart';
@@ -19,6 +20,7 @@ final sl = GetIt.instance;
 Future<void> setupLocator() async {
   // Core
   sl.registerLazySingleton(() => HttpClient());
+  sl.registerLazySingleton(() => NetworkChecker());
 
   // Remote Services
   sl.registerLazySingleton(() => AbsenceRemoteService(sl()));
@@ -31,13 +33,14 @@ Future<void> setupLocator() async {
     () => AbsenceRepositoryImpl(
       remoteService: sl<AbsenceRemoteService>(),
       localService: sl<AbsenceLocalService>(),
+      network: sl<NetworkChecker>(),
     ),
   );
-
   sl.registerLazySingleton<MemberRepository>(
     () => MemberRepositoryImpl(
       remoteService: sl<MemberRemoteService>(),
       localService: sl<MemberLocalService>(),
+      network: sl<NetworkChecker>(),
     ),
   );
 
@@ -48,8 +51,8 @@ Future<void> setupLocator() async {
       memberRepository: sl<MemberRepository>(),
     ),
   );
-  //Bloc
 
+  //Bloc
   sl.registerFactory(
     () => AbsencesBloc(sl<GetAbsencesWithMembersUseCase>(), createAbsenceExporter()),
   );
