@@ -1,21 +1,22 @@
 import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
+import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_event.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_state.dart';
-import 'package:absence_manager/util/i_cal_exporter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// BLoC responsible for managing the loading, filtering, and pagination of absences.
 class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   final GetAbsencesWithMembersUseCase useCase;
+  final AbsenceICalExporter exporter;
 
   AbsenceType? _selectedType;
   DateTimeRange? _selectedDateRange;
 
-  AbsencesBloc(this.useCase) : super(AbsencesInitial()) {
-    // Handles initial data load (unfiltered)
+  AbsencesBloc(this.useCase, this.exporter) : super(AbsencesInitial()) {
+    /// Handles initial data load (unfiltered)
     on<LoadAbsences>((event, emit) async {
       emit(AbsencesLoading());
       try {
@@ -31,7 +32,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       }
     });
 
-    // Handles filtering by type and/or date
+    /// Handles filtering by type and/or date
     on<FilterAbsences>((event, emit) async {
       emit(AbsencesLoading());
 
@@ -48,7 +49,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       }
     });
 
-    // Handles pagination of data and applies existing filters to newly fetched results
+    /// Handles pagination of data and applies existing filters to newly fetched results
     on<LoadMoreAbsences>((event, emit) async {
       final currentState = state;
       if (currentState is AbsencesLoaded) {
@@ -70,20 +71,21 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       }
     });
 
+    /// Handles exporting absences to iCal using the injected [AbsenceExporter].
+    /// Emits `isExporting: true` while the export is in progress.
+    /// On completion, emits `isExporting: false` and triggers [onExportResult] callback.
     on<ExportAbsencesToICal>((event, emit) async {
       final currentState = state;
       if (currentState is AbsencesLoaded) {
         emit(currentState.copyWith(isExporting: true));
 
         try {
-          final file = await ICalExporter.generateICalFile(currentState.absences);
+          await exporter.export(currentState.absences);
           emit(currentState.copyWith(isExporting: false));
-
-          event.onExportSuccess?.call(file.path);
+          event.onExportResult?.call("Data exported successfully");
         } catch (e) {
           emit(currentState.copyWith(isExporting: false));
-
-          event.onExportError?.call('Export failed: ${e.toString()}');
+          event.onExportResult?.call('Export failed: ${e.toString()}');
         }
       }
     });
