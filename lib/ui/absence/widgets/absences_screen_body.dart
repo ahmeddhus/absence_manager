@@ -39,39 +39,42 @@ class AbsencesScreenBody extends StatelessWidget {
               },
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: state.absences.length + (state.hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == state.absences.length && state.hasMore) {
-                    // Load More Button
-                    return SafeArea(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 16),
-                        child: Center(
-                          child:
-                              state.isLoadingMore
-                                  ? CircularProgressIndicator()
-                                  : ElevatedButton(
-                                    onPressed: () {
-                                      if (state.hasMore) {
-                                        context.read<AbsencesBloc>().add(
-                                          LoadMoreAbsences(
-                                            offset: state.absences.length,
-                                            limit: 10,
+              child:
+                  state.isInitialLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                        itemCount: state.absences.length + (state.hasMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == state.absences.length && state.hasMore) {
+                            // Load More Button
+                            return SafeArea(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 16),
+                                child: Center(
+                                  child:
+                                      state.isLoadingMore
+                                          ? CircularProgressIndicator()
+                                          : ElevatedButton(
+                                            onPressed: () {
+                                              if (state.hasMore) {
+                                                context.read<AbsencesBloc>().add(
+                                                  LoadMoreAbsences(
+                                                    offset: state.absences.length,
+                                                    limit: 10,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            child: Text("Load More"),
                                           ),
-                                        );
-                                      }
-                                    },
-                                    child: Text("Load More"),
-                                  ),
-                        ),
-                      ),
-                    );
-                  }
+                                ),
+                              ),
+                            );
+                          }
 
-                  return AbsenceTile(data: state.absences[index]);
-                },
-              ),
+                          return AbsenceTile(data: state.absences[index]);
+                        },
+                      ),
             ),
           ],
         ),

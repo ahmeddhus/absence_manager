@@ -22,10 +22,24 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   }
 
   Future<void> _onLoadAbsences(LoadAbsences event, Emitter<AbsencesState> emit) async {
-    emit(AbsencesLoading());
+    final currentState = state;
 
     _selectedType = event.type;
     _selectedDateRange = event.dateRange;
+
+    if (currentState is AbsencesLoaded) {
+      emit(
+        currentState.copyWith(
+          isInitialLoading: true,
+          selectedType: _selectedType,
+          selectedDateRange: _selectedDateRange,
+        ),
+      );
+    } else {
+      emit(
+        AbsencesLoaded.initial(selectedType: _selectedType, selectedDateRange: _selectedDateRange),
+      );
+    }
 
     final result = await getAbsencesWithMembers(
       offset: 0,

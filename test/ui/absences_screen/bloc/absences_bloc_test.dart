@@ -51,8 +51,6 @@ void main() {
     startDate: DateTime(2024, 1, 1),
     endDate: DateTime(2024, 1, 2),
     status: AbsenceStatus.confirmed,
-    memberNote: null,
-    admitterNote: null,
   );
 
   final fakeMember = Member(userId: 1, name: 'John', imageUrl: '');
@@ -69,59 +67,61 @@ void main() {
   });
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [Loading, Loaded] on LoadAbsences success',
+    'emits [initial loading=true, loaded] on LoadAbsences success',
     build: () {
-      useCase.stub =
-          ({
-            required int offset,
-            required int limit,
-            String? type,
-            DateTimeRange? dateRange,
-          }) async => Result.ok(fakeData);
-
+      useCase.stub = ({
+        required int offset,
+        required int limit,
+        String? type,
+        DateTimeRange? dateRange,
+      }) async {
+        return Result.ok(fakeData);
+      };
       return bloc;
     },
     act: (bloc) => bloc.add(LoadAbsences()),
     expect:
         () => [
-          isA<AbsencesLoading>(),
+          isA<AbsencesLoaded>().having((s) => s.isInitialLoading, 'isInitialLoading', true),
           isA<AbsencesLoaded>()
               .having((s) => s.absences.length, 'absences', 1)
-              .having((s) => s.totalCount, 'totalCount', 1),
+              .having((s) => s.totalCount, 'totalCount', 1)
+              .having((s) => s.isInitialLoading, 'isInitialLoading', false),
         ],
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [Loading, Error] on LoadAbsences failure',
+    'emits [initial loading=true, error] on LoadAbsences failure',
     build: () {
-      useCase.stub =
-          ({
-            required int offset,
-            required int limit,
-            String? type,
-            DateTimeRange? dateRange,
-          }) async => Result.error(Exception('fail'));
+      useCase.stub = ({
+        required int offset,
+        required int limit,
+        String? type,
+        DateTimeRange? dateRange,
+      }) async {
+        return Result.error(Exception('fail'));
+      };
       return bloc;
     },
     act: (bloc) => bloc.add(LoadAbsences()),
     expect:
         () => [
-          isA<AbsencesLoading>(),
+          isA<AbsencesLoaded>().having((s) => s.isInitialLoading, 'isInitialLoading', true),
           isA<AbsencesError>().having((e) => e.message, 'message', contains('fail')),
         ],
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'emits [LoadingMore, Loaded with combined list] on LoadMoreAbsences',
+    'emits [paginating=true, updated loaded] on LoadMoreAbsences',
     build: () {
-      useCase.stub =
-          ({
-            required int offset,
-            required int limit,
-            String? type,
-            DateTimeRange? dateRange,
-          }) async => Result.ok(fakeData);
-
+      useCase.stub = ({
+        required int offset,
+        required int limit,
+        String? type,
+        DateTimeRange? dateRange,
+      }) async {
+        return Result.ok(fakeData);
+      };
       return bloc;
     },
     act: (bloc) async {
@@ -132,27 +132,25 @@ void main() {
     skip: 2,
     expect:
         () => [
-          isA<AbsencesLoaded>()
-              .having((s) => s.absences.length, 'absences before merge', 1)
-              .having((s) => s.isLoadingMore, 'isLoadingMore', true),
+          isA<AbsencesLoaded>().having((s) => s.isLoadingMore, 'isPaginating', true),
           isA<AbsencesLoaded>()
               .having((s) => s.absences.length, 'absences after merge', 2)
-              .having((s) => s.isLoadingMore, 'isLoadingMore', false),
+              .having((s) => s.isLoadingMore, 'isPaginating', false),
         ],
   );
 
   blocTest<AbsencesBloc, AbsencesState>(
-    'calls exporter and emits exporting state changes',
+    'emits exporting state on ExportAbsencesToICal',
     build: () {
-      useCase.stub =
-          ({
-            required int offset,
-            required int limit,
-            String? type,
-            DateTimeRange? dateRange,
-          }) async => Result.ok(fakeData);
-
-      when(exporter.export(any)).thenAnswer((_) async => {});
+      useCase.stub = ({
+        required int offset,
+        required int limit,
+        String? type,
+        DateTimeRange? dateRange,
+      }) async {
+        return Result.ok(fakeData);
+      };
+      when(exporter.export(any)).thenAnswer((_) async {});
       return bloc;
     },
     act: (bloc) async {
@@ -160,12 +158,11 @@ void main() {
       await Future.delayed(Duration.zero);
       bloc.add(ExportAbsencesToICal());
     },
+    skip: 2,
     expect:
         () => [
-          isA<AbsencesLoading>(),
-          isA<AbsencesLoaded>(),
-          isA<AbsencesLoaded>().having((s) => s.isExporting, 'isExporting true', true),
-          isA<AbsencesLoaded>().having((s) => s.isExporting, 'isExporting false', false),
+          isA<AbsencesLoaded>().having((s) => s.isExporting, 'isExporting', true),
+          isA<AbsencesLoaded>().having((s) => s.isExporting, 'isExporting', false),
         ],
   );
 }

@@ -10,16 +10,15 @@ abstract class AbsencesState extends Equatable {
 
 class AbsencesInitial extends AbsencesState {}
 
-class AbsencesLoading extends AbsencesState {}
-
 class AbsencesLoaded extends AbsencesState {
   final List<AbsenceWithMember> absences;
   final bool hasMore;
   final int totalCount;
   final AbsenceType? selectedType;
   final DateTimeRange? selectedDateRange;
+  final bool isInitialLoading; // for initial loading or filter
   final bool isExporting;
-  final bool isLoadingMore;
+  final bool isLoadingMore; // when fetching more at scroll end
 
   AbsencesLoaded({
     required this.absences,
@@ -27,9 +26,21 @@ class AbsencesLoaded extends AbsencesState {
     required this.totalCount,
     this.selectedType,
     this.selectedDateRange,
+    this.isInitialLoading = false,
     this.isExporting = false,
     this.isLoadingMore = false,
   });
+
+  factory AbsencesLoaded.initial({AbsenceType? selectedType, DateTimeRange? selectedDateRange}) {
+    return AbsencesLoaded(
+      absences: [],
+      hasMore: false,
+      totalCount: 0,
+      isInitialLoading: true,
+      selectedType: selectedType,
+      selectedDateRange: selectedDateRange,
+    );
+  }
 
   AbsencesLoaded copyWith({
     List<AbsenceWithMember>? absences,
@@ -37,6 +48,7 @@ class AbsencesLoaded extends AbsencesState {
     int? totalCount,
     AbsenceType? selectedType,
     DateTimeRange? selectedDateRange,
+    bool? isInitialLoading,
     bool? isExporting,
     bool? isLoadingMore,
   }) {
@@ -46,6 +58,7 @@ class AbsencesLoaded extends AbsencesState {
       totalCount: totalCount ?? this.totalCount,
       selectedType: selectedType ?? this.selectedType,
       selectedDateRange: selectedDateRange ?? this.selectedDateRange,
+      isInitialLoading: isInitialLoading ?? this.isInitialLoading,
       isExporting: isExporting ?? this.isExporting,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
@@ -58,6 +71,7 @@ class AbsencesLoaded extends AbsencesState {
     totalCount,
     selectedType,
     selectedDateRange,
+    isInitialLoading,
     isExporting,
     isLoadingMore,
   ];
