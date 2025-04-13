@@ -4,7 +4,6 @@ import 'package:absence_manager/data/services/api/member_remote_service.dart';
 import 'package:absence_manager/data/services/api/model/member/member_api_model.dart';
 import 'package:absence_manager/data/services/local/member_local_service.dart';
 import 'package:absence_manager/data/services/local/model/member/member_cache_model.dart';
-import 'package:absence_manager/domain/models/member/member.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
