@@ -48,16 +48,22 @@ class AbsencesScreenBody extends StatelessWidget {
                       child: Container(
                         margin: EdgeInsets.only(top: 16),
                         child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (state.hasMore) {
-                                context.read<AbsencesBloc>().add(
-                                  LoadMoreAbsences(offset: state.absences.length, limit: 10),
-                                );
-                              }
-                            },
-                            child: Text("Load More"),
-                          ),
+                          child:
+                              state.isLoadingMore
+                                  ? CircularProgressIndicator()
+                                  : ElevatedButton(
+                                    onPressed: () {
+                                      if (state.hasMore) {
+                                        context.read<AbsencesBloc>().add(
+                                          LoadMoreAbsences(
+                                            offset: state.absences.length,
+                                            limit: 10,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Text("Load More"),
+                                  ),
                         ),
                       ),
                     );
