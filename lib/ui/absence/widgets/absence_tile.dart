@@ -9,14 +9,23 @@ class AbsenceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final absence = data.absence;
     final member = data.member;
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage:
-            data.member.imageUrl.isNotEmpty ? NetworkImage(data.member.imageUrl) : null,
-        child: data.member.imageUrl.isEmpty ? const Icon(Icons.person_outline) : null,
+        radius: 24,
+        backgroundColor: colorScheme.primaryContainer,
+        child: ClipOval(
+          child: Image.network(
+            data.member.imageUrl,
+            fit: BoxFit.cover,
+            width: 48,
+            height: 48,
+            errorBuilder: (_, __, ___) => const Icon(Icons.person),
+          ),
+        ),
       ),
 
       title: Text(member.name),
