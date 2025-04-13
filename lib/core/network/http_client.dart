@@ -1,16 +1,15 @@
 import 'dart:convert';
 
+import 'package:absence_manager/config/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class HttpClient {
-  static const String _baseUrl = 'https://absence-api-nestjs-production.up.railway.app';
-
   final http.Client _client;
 
   HttpClient({http.Client? client}) : _client = client ?? http.Client();
 
   Future<dynamic> get(String endpoint) async {
-    final response = await _client.get(Uri.parse('$_baseUrl$endpoint'));
+    final response = await _client.get(Uri.parse('${ApiConfig.baseUrl}$endpoint'));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return json.decode(response.body);
@@ -20,7 +19,7 @@ class HttpClient {
   }
 
   Future<dynamic> getUri(Uri uri) async {
-    final url = '$_baseUrl${uri.path}?${uri.query}';
+    final url = '${ApiConfig.baseUrl}${uri.path}?${uri.query}';
     final response = await _client.get(Uri.parse(url));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {

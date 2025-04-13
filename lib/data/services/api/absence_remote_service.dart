@@ -1,3 +1,4 @@
+import 'package:absence_manager/config/api_config.dart';
 import 'package:absence_manager/core/network/http_client.dart';
 import 'package:absence_manager/data/services/api/model/absence/absence_api_model.dart';
 
@@ -21,7 +22,7 @@ class AbsenceRemoteService {
       if (to != null) 'to': to,
     };
 
-    final uri = Uri(path: '/absences', queryParameters: queryParams);
+    final uri = Uri(path: ApiConfig.absences, queryParameters: queryParams);
 
     final data = await _httpClient.getUri(uri);
     final list = (data['data'] as List).map((json) => AbsenceApiModel.fromJson(json)).toList();
