@@ -12,7 +12,8 @@ dependencies:
 
   # For value-based equality in Bloc states/events
   equatable: ^2.0.7
-  
+
+  http: ^1.3.0
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
