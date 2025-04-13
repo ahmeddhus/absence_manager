@@ -6,11 +6,12 @@ A Flutter application to manage and display employee absences. It includes featu
 
 ## ✅ Task Checklist
 
-###  Initial Setup
+### Initial Setup
 - [x] Set `main` branch protection rules
 - [x] Add `ARCHITECTURE.md` with clean architecture overview
 - [x] Add project `README.md` with task description and checklist
 - [x] Define branch naming conventions in `README.md`
+- [x] Deploy to GitHub Pages
 
 ### Core Requirements
 - [x] Display a list of absences including employee names
@@ -39,6 +40,13 @@ A Flutter application to manage and display employee absences. It includes featu
 
 ---
 
+## 🌐 Live Demo
+
+You can view and test the deployed app here:  
+🔗 [https://ahmeddhus.github.io/absence_manager/](https://ahmeddhus.github.io/absence_manager/)
+
+---
+
 ## 🧱 Architecture Overview
 
 This project follows clean architecture principles with a layered approach, separating data, domain, and UI concerns. The structure is designed to be modular, scalable, and testable.
@@ -52,18 +60,6 @@ For full implementation details and folder responsibilities, see [ARCHITECTURE.m
 
 ## 🔀 Branch Naming Convention
 
-This project follows a clear and consistent branch naming strategy based on the type of work being done:
+This project follows a consistent and descriptive branch naming strategy.
 
-| Prefix       | Purpose                              | Example                            |
-|--------------|--------------------------------------|------------------------------------|
-| `feature/`   | New feature or functionality         | `feature/pagination`               |
-| `fix/`       | Bug fix                              | `fix/loading-state`                |
-| `chore/`     | Setup, tooling, config, non-feature  | `chore/folder-structure`           |
-| `docs/`      | Documentation only                   | `docs/architecture-and-readme`     |
-| `refactor/`  | Code cleanup with no behavior change | `refactor/usecase-layer`           |
-| `test/`      | Adding or updating tests             | `test/bloc-tests`                  |
-
-> Branch names should be lowercase, use hyphens to separate words, and be as descriptive as possible.
-
-
-
+📄 See full details in [BRANCHING.md](BRANCHING.md)
