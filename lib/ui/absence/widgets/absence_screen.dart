@@ -1,7 +1,7 @@
 import 'package:absence_manager/ui/absence/bloc/absence_bloc.dart';
-import 'package:absence_manager/ui/absence/bloc/absence_event.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_state.dart';
 import 'package:absence_manager/ui/absence/widgets/absences_screen_body.dart';
+import 'package:absence_manager/ui/absence/widgets/export_fab_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,34 +12,7 @@ class AbsencesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Absences")),
-      floatingActionButton: BlocBuilder<AbsencesBloc, AbsencesState>(
-        builder: (context, state) {
-          final bool isEnabled = state is AbsencesLoaded && state.absences.isNotEmpty;
-          final colorScheme = Theme.of(context).colorScheme;
-
-          return FloatingActionButton(
-            onPressed:
-                isEnabled
-                    ? () {
-                      context.read<AbsencesBloc>().add(
-                        ExportAbsencesToICal(
-                          onExportResult:
-                              (message) => ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(SnackBar(content: Text(message))),
-                        ),
-                      );
-                    }
-                    : null,
-            backgroundColor:
-                isEnabled ? colorScheme.primaryContainer : colorScheme.primaryContainer,
-            child: Icon(
-              Icons.share,
-              color: isEnabled ? colorScheme.primary : colorScheme.primary.withValues(alpha: 0.3),
-            ),
-          );
-        },
-      ),
+      floatingActionButton: ExportFabButton(),
       body: BlocBuilder<AbsencesBloc, AbsencesState>(
         builder: (context, state) {
           if (state is AbsencesLoading) {
