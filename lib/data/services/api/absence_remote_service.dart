@@ -6,14 +6,16 @@ class AbsenceRemoteService {
 
   AbsenceRemoteService(this._httpClient);
 
-  Future<List<AbsenceApiModel>> fetchAbsences() async {
-    final response = await _httpClient.get('/absences');
+  Future<(int total, List<AbsenceApiModel> items)> fetchAbsences({
+    required int page,
+    required int limit,
+  }) async {
+    final data = await _httpClient.get('/absences?page=$page&limit=$limit');
 
-    final data = response['data'];
-    if (data is List) {
-      return data.map((json) => AbsenceApiModel.fromJson(json)).toList();
-    } else {
-      throw FormatException('Unexpected data format for /absences');
-    }
+    final list = (data['data'] as List).map((json) => AbsenceApiModel.fromJson(json)).toList();
+
+    final total = data['total'] as int;
+
+    return (total, list);
   }
 }
