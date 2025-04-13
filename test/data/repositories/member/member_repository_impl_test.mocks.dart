@@ -15,6 +15,7 @@ import 'package:absence_manager/data/services/local/member_local_service.dart'
 import 'package:absence_manager/data/services/local/model/member/member_cache_model.dart'
     as _i6;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -86,6 +87,17 @@ class MockNetworkChecker extends _i1.Mock implements _i7.NetworkChecker {
   MockNetworkChecker() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  String get testUrl =>
+      (super.noSuchMethod(
+            Invocation.getter(#testUrl),
+            returnValue: _i8.dummyValue<String>(
+              this,
+              Invocation.getter(#testUrl),
+            ),
+          )
+          as String);
 
   @override
   _i3.Future<bool> get hasConnection =>
