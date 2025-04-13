@@ -6,7 +6,7 @@ class AbsenceLocalService {
 
   Future<void> saveAbsences(List<AbsenceCacheModel> absences) async {
     final box = await Hive.openBox<AbsenceCacheModel>(_boxName);
-    await box.clear(); // Overwrite cache
+    await box.clear();
     await box.addAll(absences);
     await box.close();
   }

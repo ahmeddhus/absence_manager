@@ -6,7 +6,7 @@ class MemberLocalService {
 
   Future<void> saveMembers(List<MemberCacheModel> members) async {
     final box = await Hive.openBox<MemberCacheModel>(_boxName);
-    await box.clear(); // Overwrite cache
+    await box.clear();
     await box.addAll(members);
     await box.close();
   }

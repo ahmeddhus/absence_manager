@@ -6,6 +6,8 @@ import 'package:absence_manager/data/services/local/mappers/member_cache_mapper.
 import 'package:absence_manager/data/services/local/member_local_service.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
 
+/// Repository implementation that manages loading member data from a remote API,
+/// with local Hive cache as fallback in offline or error scenarios.
 class MemberRepositoryImpl implements MemberRepository {
   final MemberRemoteService _remoteService;
   final MemberLocalService _localService;
@@ -25,14 +27,20 @@ class MemberRepositoryImpl implements MemberRepository {
 
     try {
       if (isOnline) {
+        // Fetch from API
         final remoteMembers = await _remoteService.fetchMembers();
+
+        // Save to local cache
         await _localService.saveMembers(remoteMembers.map((e) => e.toCacheModel()).toList());
+
         return remoteMembers.map((e) => e.toDomain()).toList();
       } else {
+        // Load from local cache if offline
         final cached = await _localService.getCachedMembers();
         return cached.map((e) => e.toApiModel().toDomain()).toList();
       }
     } catch (_) {
+      // Fallback to cache if API call fails
       final fallback = await _localService.getCachedMembers();
       return fallback.map((e) => e.toApiModel().toDomain()).toList();
     }

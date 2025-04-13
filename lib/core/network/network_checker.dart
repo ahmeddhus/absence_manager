@@ -1,4 +1,3 @@
-// lib/core/network/network_checker.dart
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class NetworkChecker {

@@ -21,7 +21,6 @@ class WebAbsenceICalExporter implements AbsenceICalExporter {
       ..setAttribute('download', 'absences.ics')
       ..click();
 
-    // Clean up
     html.Url.revokeObjectUrl(url);
   }
 }

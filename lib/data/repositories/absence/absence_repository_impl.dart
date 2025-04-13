@@ -6,6 +6,8 @@ import 'package:absence_manager/data/services/local/absence_local_service.dart';
 import 'package:absence_manager/data/services/local/mappers/absence_cache_mapper.dart';
 import 'package:absence_manager/domain/models/absence/absence_list.dart';
 
+/// Repository implementation that manages loading absences from a remote API
+/// with local Hive caching as a fallback for offline scenarios.
 class AbsenceRepositoryImpl implements AbsenceRepository {
   final AbsenceRemoteService _remoteService;
   final AbsenceLocalService _localService;
@@ -32,6 +34,7 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
 
     try {
       if (isOnline) {
+        // Fetch from API
         final (total, absences) = await _remoteService.fetchAbsences(
           page: page,
           limit: limit,
@@ -40,10 +43,12 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
           to: to?.toIso8601String(),
         );
 
+        // Cache for offline use
         await _localService.saveAbsences(absences.map((e) => e.toCacheModel()).toList());
 
         return AbsenceList(totalCount: total, absences: absences.map((e) => e.toDomain()).toList());
       } else {
+        // Load from cache if offline
         final cached = await _localService.getCachedAbsences();
         return AbsenceList(
           totalCount: cached.length,
@@ -51,6 +56,7 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
         );
       }
     } catch (_) {
+      // Fallback to cache if API or local fails
       final fallback = await _localService.getCachedAbsences();
       return AbsenceList(
         totalCount: fallback.length,
