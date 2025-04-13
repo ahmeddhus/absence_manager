@@ -20,13 +20,25 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
        _network = network;
 
   @override
-  Future<AbsenceList> getAllAbsences({required int offset, required int limit}) async {
+  Future<AbsenceList> getAllAbsences({
+    required int offset,
+    required int limit,
+    String? type,
+    DateTime? from,
+    DateTime? to,
+  }) async {
     final isOnline = await _network.hasConnection;
     final page = (offset ~/ limit) + 1;
 
     try {
       if (isOnline) {
-        final (total, absences) = await _remoteService.fetchAbsences(page: page, limit: limit);
+        final (total, absences) = await _remoteService.fetchAbsences(
+          page: page,
+          limit: limit,
+          type: type,
+          from: from?.toIso8601String(),
+          to: to?.toIso8601String(),
+        );
 
         await _localService.saveAbsences(absences.map((e) => e.toCacheModel()).toList());
 

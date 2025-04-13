@@ -48,7 +48,12 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     _selectedType = event.type;
     _selectedDateRange = event.dateRange;
 
-    final result = await getAbsencesWithMembers(offset: 0, limit: 100);
+    final result = await getAbsencesWithMembers(
+      offset: 0,
+      limit: 100,
+      type: _selectedType?.label.toLowerCase(),
+      dateRange: _selectedDateRange,
+    );
 
     await result.handle(
       onSuccess: (value) async {

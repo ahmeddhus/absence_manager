@@ -4,6 +4,7 @@ import 'package:absence_manager/data/repositories/member/member_repository.dart'
 import 'package:absence_manager/domain/models/absence_list_with_members.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
+import 'package:flutter/material.dart';
 
 /// Use case for retrieving all absences enriched with their corresponding member data.
 ///
@@ -24,9 +25,21 @@ class GetAbsencesWithMembersUseCase {
   }) : _absenceRepository = absenceRepository,
        _memberRepository = memberRepository;
 
-  Future<Result<AbsenceListWithMembers>> call({required int offset, required int limit}) async {
+  Future<Result<AbsenceListWithMembers>> call({
+    required int offset,
+    required int limit,
+    String? type,
+    DateTimeRange? dateRange,
+  }) async {
     try {
-      final absences = await _absenceRepository.getAllAbsences(offset: offset, limit: limit);
+      final absences = await _absenceRepository.getAllAbsences(
+        offset: offset,
+        limit: limit,
+        type: type,
+        from: dateRange?.start,
+        to: dateRange?.end,
+      );
+
       final members = await _memberRepository.getAllMembers();
 
       final memberMap = {for (final m in members) m.userId: m};
