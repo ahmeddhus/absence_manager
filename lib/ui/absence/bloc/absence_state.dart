@@ -31,6 +31,17 @@ class AbsencesLoaded extends AbsencesState {
     this.isLoadingMore = false,
   });
 
+  factory AbsencesLoaded.initial({AbsenceType? selectedType, DateTimeRange? selectedDateRange}) {
+    return AbsencesLoaded(
+      absences: [],
+      hasMore: false,
+      totalCount: 0,
+      isInitialLoading: true,
+      selectedType: selectedType,
+      selectedDateRange: selectedDateRange,
+    );
+  }
+
   AbsencesLoaded copyWith({
     List<AbsenceWithMember>? absences,
     bool? hasMore,
