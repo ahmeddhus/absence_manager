@@ -14,7 +14,6 @@ import 'package:absence_manager/data/services/local/member_local_service.dart'
     as _i5;
 import 'package:absence_manager/data/services/local/model/member/member_cache_model.dart'
     as _i6;
-import 'package:connectivity_plus/connectivity_plus.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -95,14 +94,4 @@ class MockNetworkChecker extends _i1.Mock implements _i7.NetworkChecker {
             returnValue: _i3.Future<bool>.value(false),
           )
           as _i3.Future<bool>);
-
-  @override
-  _i3.Future<List<_i8.ConnectivityResult>> get connectivityResults =>
-      (super.noSuchMethod(
-            Invocation.getter(#connectivityResults),
-            returnValue: _i3.Future<List<_i8.ConnectivityResult>>.value(
-              <_i8.ConnectivityResult>[],
-            ),
-          )
-          as _i3.Future<List<_i8.ConnectivityResult>>);
 }
