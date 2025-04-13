@@ -3,14 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i3;
 
-import 'package:absence_manager/data/repositories/absence/absence_repository.dart' as _i2;
-import 'package:absence_manager/data/repositories/member/member_repository.dart' as _i3;
-import 'package:absence_manager/domain/models/absence_list_with_members.dart' as _i4;
-import 'package:absence_manager/domain/models/absence_with_member.dart' as _i8;
-import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart' as _i7;
-import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart' as _i5;
+import 'package:absence_manager/domain/models/absence_with_member.dart' as _i4;
+import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart'
+    as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -27,74 +24,21 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAbsenceRepository_0 extends _i1.SmartFake implements _i2.AbsenceRepository {
-  _FakeAbsenceRepository_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeMemberRepository_1 extends _i1.SmartFake implements _i3.MemberRepository {
-  _FakeMemberRepository_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeAbsenceListWithMembers_2 extends _i1.SmartFake implements _i4.AbsenceListWithMembers {
-  _FakeAbsenceListWithMembers_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-/// A class which mocks [GetAbsencesWithMembersUseCase].
+/// A class which mocks [AbsenceICalExporter].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetAbsencesWithMembersUseCase extends _i1.Mock
-    implements _i5.GetAbsencesWithMembersUseCase {
-  MockGetAbsencesWithMembersUseCase() {
+class MockAbsenceICalExporter extends _i1.Mock
+    implements _i2.AbsenceICalExporter {
+  MockAbsenceICalExporter() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AbsenceRepository get absenceRepo =>
-      (super.noSuchMethod(
-            Invocation.getter(#absenceRepo),
-            returnValue: _FakeAbsenceRepository_0(this, Invocation.getter(#absenceRepo)),
-          )
-          as _i2.AbsenceRepository);
-
-  @override
-  _i3.MemberRepository get memberRepo =>
-      (super.noSuchMethod(
-            Invocation.getter(#memberRepo),
-            returnValue: _FakeMemberRepository_1(this, Invocation.getter(#memberRepo)),
-          )
-          as _i3.MemberRepository);
-
-  @override
-  _i6.Future<_i4.AbsenceListWithMembers> execute({int? offset = 0, int? limit = 10}) =>
-      (super.noSuchMethod(
-            Invocation.method(#execute, [], {#offset: offset, #limit: limit}),
-            returnValue: _i6.Future<_i4.AbsenceListWithMembers>.value(
-              _FakeAbsenceListWithMembers_2(
-                this,
-                Invocation.method(#execute, [], {#offset: offset, #limit: limit}),
-              ),
-            ),
-          )
-          as _i6.Future<_i4.AbsenceListWithMembers>);
-}
-
-/// A class which mocks [AbsenceExporter].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockAbsenceExporter extends _i1.Mock implements _i7.AbsenceICalExporter {
-  MockAbsenceExporter() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i6.Future<void> export(List<_i8.AbsenceWithMember>? absences) =>
+  _i3.Future<void> export(List<_i4.AbsenceWithMember>? absences) =>
       (super.noSuchMethod(
             Invocation.method(#export, [absences]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i3.Future<void>);
 }

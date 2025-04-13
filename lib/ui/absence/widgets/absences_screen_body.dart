@@ -29,12 +29,12 @@ class AbsencesScreenBody extends StatelessWidget {
               selectedRange: state.selectedDateRange,
               onTypeChanged: (type) {
                 context.read<AbsencesBloc>().add(
-                  FilterAbsences(type: type, dateRange: state.selectedDateRange),
+                  LoadAbsences(type: type, dateRange: state.selectedDateRange),
                 );
               },
               onDateRangeChanged: (range) {
                 context.read<AbsencesBloc>().add(
-                  FilterAbsences(type: state.selectedType, dateRange: range),
+                  LoadAbsences(type: state.selectedType, dateRange: range),
                 );
               },
             ),
@@ -48,16 +48,22 @@ class AbsencesScreenBody extends StatelessWidget {
                       child: Container(
                         margin: EdgeInsets.only(top: 16),
                         child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (state.hasMore) {
-                                context.read<AbsencesBloc>().add(
-                                  LoadMoreAbsences(offset: state.absences.length, limit: 10),
-                                );
-                              }
-                            },
-                            child: Text("Load More"),
-                          ),
+                          child:
+                              state.isLoadingMore
+                                  ? CircularProgressIndicator()
+                                  : ElevatedButton(
+                                    onPressed: () {
+                                      if (state.hasMore) {
+                                        context.read<AbsencesBloc>().add(
+                                          LoadMoreAbsences(
+                                            offset: state.absences.length,
+                                            limit: 10,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Text("Load More"),
+                                  ),
                         ),
                       ),
                     );
