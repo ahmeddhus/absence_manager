@@ -4,7 +4,6 @@ import 'package:absence_manager/ui/absence/bloc/absence_state.dart';
 import 'package:absence_manager/ui/absence/widgets/absences_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share_plus/share_plus.dart';
 
 class AbsencesScreen extends StatelessWidget {
   const AbsencesScreen({super.key});
@@ -24,12 +23,10 @@ class AbsencesScreen extends StatelessWidget {
                     ? () {
                       context.read<AbsencesBloc>().add(
                         ExportAbsencesToICal(
-                          onExportSuccess: (filePath) => Share.shareXFiles([XFile(filePath)]),
-                          onExportError: (error) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(error)));
-                          },
+                          onExportResult:
+                              (message) => ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text(message))),
                         ),
                       );
                     }

@@ -30,10 +30,9 @@ class FilterAbsences extends AbsencesEvent {
 }
 
 class ExportAbsencesToICal extends AbsencesEvent {
-  final void Function(String filePath)? onExportSuccess;
-  final void Function(String error)? onExportError;
+  final void Function(String message)? onExportResult;
 
-  ExportAbsencesToICal({this.onExportSuccess, this.onExportError});
+  ExportAbsencesToICal({this.onExportResult});
 
   @override
   List<Object?> get props => [];

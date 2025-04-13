@@ -3,6 +3,7 @@ import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_list_with_members.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
+import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_bloc.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_event.dart';
@@ -12,16 +13,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-@GenerateMocks([GetAbsencesWithMembersUseCase])
+@GenerateMocks([GetAbsencesWithMembersUseCase, AbsenceICalExporter])
 import 'absences_bloc_test.mocks.dart';
 
 void main() {
   late MockGetAbsencesWithMembersUseCase mockUseCase;
   late AbsencesBloc absencesBloc;
+  late MockAbsenceExporter mockExporter;
 
   setUp(() {
     mockUseCase = MockGetAbsencesWithMembersUseCase();
-    absencesBloc = AbsencesBloc(mockUseCase);
+    mockExporter = MockAbsenceExporter();
+    absencesBloc = AbsencesBloc(mockUseCase, mockExporter);
   });
 
   tearDown(() {
@@ -152,5 +155,44 @@ void main() {
             selectedDateRange: null,
           ),
         ],
+  );
+
+  blocTest<AbsencesBloc, AbsencesState>(
+    'emits exporting states and triggers exporter on ExportAbsencesToICal',
+    build: () {
+      when(mockExporter.export(any)).thenAnswer((_) async => 'exported.ics');
+      return AbsencesBloc(mockUseCase, mockExporter);
+    },
+    seed: () {
+      final absence = Absence(
+        id: 1,
+        userId: 100,
+        type: AbsenceType.vacation,
+        startDate: DateTime(2024, 1, 1),
+        endDate: DateTime(2024, 1, 10),
+        memberNote: 'Test',
+        admitterNote: 'Approved',
+        status: AbsenceStatus.confirmed,
+      );
+      final member = Member(userId: 100, name: 'Alice', imageUrl: '');
+      return AbsencesLoaded(
+        absences: [AbsenceWithMember(absence: absence, member: member)],
+        hasMore: false,
+        totalCount: 1,
+      );
+    },
+    act: (bloc) {
+      return bloc.add(
+        ExportAbsencesToICal(onExportResult: (msg) => expect(msg, contains("exported"))),
+      );
+    },
+    expect:
+        () => [
+          isA<AbsencesLoaded>().having((s) => s.isExporting, 'isExporting', true),
+          isA<AbsencesLoaded>().having((s) => s.isExporting, 'isExporting', false),
+        ],
+    verify: (_) {
+      verify(mockExporter.export(any)).called(1);
+    },
   );
 }
