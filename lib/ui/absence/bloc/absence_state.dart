@@ -10,8 +10,6 @@ abstract class AbsencesState extends Equatable {
 
 class AbsencesInitial extends AbsencesState {}
 
-class AbsencesLoading extends AbsencesState {}
-
 class AbsencesLoaded extends AbsencesState {
   final List<AbsenceWithMember> absences;
   final bool hasMore;

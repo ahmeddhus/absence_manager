@@ -15,15 +15,13 @@ class AbsencesScreen extends StatelessWidget {
       floatingActionButton: ExportFabButton(),
       body: BlocBuilder<AbsencesBloc, AbsencesState>(
         builder: (context, state) {
-          if (state is AbsencesLoading) {
-            return Center(child: CircularProgressIndicator());
+          if (state is AbsencesLoaded) {
+            return AbsencesScreenBody(state: state);
           } else if (state is AbsencesError) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Center(child: Text("Error: ${state.message}", textAlign: TextAlign.center)),
             );
-          } else if (state is AbsencesLoaded) {
-            return AbsencesScreenBody(state: state);
           }
           return Center(child: Text("No data"));
         },
