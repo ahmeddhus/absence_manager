@@ -14,6 +14,7 @@ It separates the app into three main layers:
 
 ```
 lib/
+├── config/                   # Global configuration (e.g., themes, app setup)
 ├── data/                     # Manages data retrieval/storage
 │   ├── repositories/         # Repository interfaces and implementations
 │   │   ├── <feature_a>/      # e.g., entity_a_repository.dart
@@ -29,7 +30,7 @@ lib/
 │   └── <feature_screen>/     # Feature-specific UI (e.g., home_screen)
 │       ├── bloc/             # State management using BLoC
 │       └── widgets/          # Reusable UI components
-├── core/                     # Shared constants, utilities, extensions, themes
+├── utils/                     # Shared utilities, extensions, helpers
 └── main.dart                 # Application entry point
 ```
 
