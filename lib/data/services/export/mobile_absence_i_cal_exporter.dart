@@ -13,6 +13,6 @@ class MobileAbsenceICalExporter implements AbsenceICalExporter {
   @override
   Future<void> export(List<AbsenceWithMember> absences) async {
     final file = await ICalExporter.generateICalFile(absences);
-    await Share.shareXFiles([XFile(file.path)], text: 'Absence calendar export');
+    await Share.shareXFiles([XFile(file.path)]);
   }
 }
