@@ -19,6 +19,17 @@ class HttpClient {
     }
   }
 
+  Future<dynamic> getUri(Uri uri) async {
+    final url = '$_baseUrl${uri.path}?${uri.query}';
+    final response = await _client.get(Uri.parse(url));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return json.decode(response.body);
+    } else {
+      throw HttpException(response.statusCode, response.body);
+    }
+  }
+
   void dispose() {
     _client.close();
   }
