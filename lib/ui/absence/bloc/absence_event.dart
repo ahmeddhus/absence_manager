@@ -7,7 +7,15 @@ abstract class AbsencesEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadAbsences extends AbsencesEvent {}
+class LoadAbsences extends AbsencesEvent {
+  final AbsenceType? type; // e.g., 'vacation', 'sickness'
+  final DateTimeRange? dateRange;
+
+  LoadAbsences({this.type, this.dateRange});
+
+  @override
+  List<Object?> get props => [type, dateRange];
+}
 
 class LoadMoreAbsences extends AbsencesEvent {
   final int offset;
@@ -17,16 +25,6 @@ class LoadMoreAbsences extends AbsencesEvent {
 
   @override
   List<Object?> get props => [offset, limit];
-}
-
-class FilterAbsences extends AbsencesEvent {
-  final AbsenceType? type; // e.g., 'vacation', 'sickness'
-  final DateTimeRange? dateRange;
-
-  FilterAbsences({this.type, this.dateRange});
-
-  @override
-  List<Object?> get props => [type, dateRange];
 }
 
 class ExportAbsencesToICal extends AbsencesEvent {

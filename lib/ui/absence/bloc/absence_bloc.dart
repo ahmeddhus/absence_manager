@@ -17,7 +17,6 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
 
   AbsencesBloc(this.getAbsencesWithMembers, this.exporter) : super(AbsencesInitial()) {
     on<LoadAbsences>(_onLoadAbsences);
-    on<FilterAbsences>(_onFilterAbsences);
     on<LoadMoreAbsences>(_onLoadMoreAbsences);
     on<ExportAbsencesToICal>(_onExportAbsencesToICal);
   }
@@ -25,7 +24,15 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   Future<void> _onLoadAbsences(LoadAbsences event, Emitter<AbsencesState> emit) async {
     emit(AbsencesLoading());
 
-    final result = await getAbsencesWithMembers(offset: 0, limit: 10);
+    _selectedType = event.type;
+    _selectedDateRange = event.dateRange;
+
+    final result = await getAbsencesWithMembers(
+      offset: 0,
+      limit: 10,
+      type: _selectedType?.name,
+      dateRange: _selectedDateRange,
+    );
 
     await result.handle(
       onSuccess: (value) async {
@@ -42,41 +49,22 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     );
   }
 
-  Future<void> _onFilterAbsences(FilterAbsences event, Emitter<AbsencesState> emit) async {
-    emit(AbsencesLoading());
-
-    _selectedType = event.type;
-    _selectedDateRange = event.dateRange;
-
-    final result = await getAbsencesWithMembers(
-      offset: 0,
-      limit: 100,
-      type: _selectedType?.label.toLowerCase(),
-      dateRange: _selectedDateRange,
-    );
-
-    await result.handle(
-      onSuccess: (value) async {
-        final filtered = value.absences.where(_matchesCurrentFilters).toList();
-        _emitLoaded(emit, filtered, hasMore: false, totalCount: value.totalCount);
-      },
-      onError: (error) async {
-        emit(AbsencesError(error.toString()));
-      },
-    );
-  }
-
   Future<void> _onLoadMoreAbsences(LoadMoreAbsences event, Emitter<AbsencesState> emit) async {
     final currentState = state;
 
     if (currentState is AbsencesLoaded) {
       emit(currentState.copyWith(isLoadingMore: true));
 
-      final result = await getAbsencesWithMembers(offset: event.offset, limit: event.limit);
+      final result = await getAbsencesWithMembers(
+        offset: event.offset,
+        limit: event.limit,
+        type: _selectedType?.name,
+        dateRange: _selectedDateRange,
+      );
 
       await result.handle(
         onSuccess: (value) async {
-          final filteredNew = value.absences.where(_matchesCurrentFilters).toList();
+          final filteredNew = value.absences;
           final combined = currentState.absences + filteredNew;
 
           _emitLoaded(
@@ -110,21 +98,6 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
         event.onExportResult?.call('Export failed: ${e.toString()}');
       }
     }
-  }
-
-  bool _matchesCurrentFilters(AbsenceWithMember a) {
-    final matchesType = _selectedType == null || a.absence.type == _selectedType;
-
-    final matchesDate =
-        _selectedDateRange == null ||
-        (a.absence.startDate != null &&
-            a.absence.endDate != null &&
-            a.absence.startDate!.isAfter(
-              _selectedDateRange!.start.subtract(const Duration(days: 1)),
-            ) &&
-            a.absence.endDate!.isBefore(_selectedDateRange!.end.add(const Duration(days: 1))));
-
-    return matchesType && matchesDate;
   }
 
   void _emitLoaded(

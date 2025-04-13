@@ -29,12 +29,12 @@ class AbsencesScreenBody extends StatelessWidget {
               selectedRange: state.selectedDateRange,
               onTypeChanged: (type) {
                 context.read<AbsencesBloc>().add(
-                  FilterAbsences(type: type, dateRange: state.selectedDateRange),
+                  LoadAbsences(type: type, dateRange: state.selectedDateRange),
                 );
               },
               onDateRangeChanged: (range) {
                 context.read<AbsencesBloc>().add(
-                  FilterAbsences(type: state.selectedType, dateRange: range),
+                  LoadAbsences(type: state.selectedType, dateRange: range),
                 );
               },
             ),
