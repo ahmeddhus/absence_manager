@@ -7,8 +7,7 @@ class MemberRemoteService {
   MemberRemoteService(this._httpClient);
 
   Future<List<MemberApiModel>> fetchMembers() async {
-    final response = await _httpClient.get('/members');
-    final data = response['data'];
+    final data = await _httpClient.get('/members');
 
     if (data is List) {
       return data.map((json) => MemberApiModel.fromJson(json)).toList();
