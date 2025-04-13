@@ -44,11 +44,17 @@ class MockAbsenceRepository extends _i1.Mock implements _i3.AbsenceRepository {
   _i4.Future<_i2.AbsenceList> getAllAbsences({
     required int? offset,
     required int? limit,
+    String? type,
+    DateTime? from,
+    DateTime? to,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getAllAbsences, [], {
               #offset: offset,
               #limit: limit,
+              #type: type,
+              #from: from,
+              #to: to,
             }),
             returnValue: _i4.Future<_i2.AbsenceList>.value(
               _FakeAbsenceList_0(
@@ -56,6 +62,9 @@ class MockAbsenceRepository extends _i1.Mock implements _i3.AbsenceRepository {
                 Invocation.method(#getAllAbsences, [], {
                   #offset: offset,
                   #limit: limit,
+                  #type: type,
+                  #from: from,
+                  #to: to,
                 }),
               ),
             ),
