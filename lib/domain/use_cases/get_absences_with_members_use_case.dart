@@ -14,31 +14,29 @@ import 'package:absence_manager/domain/models/member/member.dart';
 /// not raw data fetching or UI formatting.
 
 class GetAbsencesWithMembersUseCase {
-  final AbsenceRepository absenceRepo;
-  final MemberRepository memberRepo;
+  final AbsenceRepository _absenceRepository;
+  final MemberRepository _memberRepository;
 
-  GetAbsencesWithMembersUseCase(this.absenceRepo, this.memberRepo);
+  GetAbsencesWithMembersUseCase({
+    required AbsenceRepository absenceRepository,
+    required MemberRepository memberRepository,
+  }) : _absenceRepository = absenceRepository,
+       _memberRepository = memberRepository;
 
-  Future<AbsenceListWithMembers> execute({int offset = 0, int limit = 10}) async {
-    final absenceList = await absenceRepo.getAllAbsences(offset: offset, limit: limit);
-    final members = await memberRepo.getAllMembers();
+  Future<AbsenceListWithMembers> call({required int offset, required int limit}) async {
+    final absenceList = await _absenceRepository.getAllAbsences(offset: offset, limit: limit);
+    final members = await _memberRepository.getAllMembers();
 
-    // Create a map of userId to Member for quick lookup
-    final memberMap = {for (var m in members) m.userId: m};
+    final membersMap = {for (final m in members) m.userId: m};
 
-    // Combine absences with corresponding members
-    final absencesWithMembers =
+    final combined =
         absenceList.absences.map((absence) {
           final member =
-              memberMap[absence.userId] ??
-              Member(userId: absence.userId, name: "Unknown", imageUrl: "");
+              membersMap[absence.userId] ??
+              Member(userId: absence.userId, name: 'Unknown', imageUrl: '');
           return AbsenceWithMember(absence: absence, member: member);
         }).toList();
 
-    // Return totalCount and combined absences
-    return AbsenceListWithMembers(
-      totalCount: absenceList.totalCount,
-      absences: absencesWithMembers,
-    );
+    return AbsenceListWithMembers(totalCount: absenceList.totalCount, absences: combined);
   }
 }
