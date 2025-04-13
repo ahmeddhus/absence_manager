@@ -12,8 +12,6 @@ class AbsencesInitial extends AbsencesState {}
 
 class AbsencesLoading extends AbsencesState {}
 
-class AbsencesLoadingMore extends AbsencesState {}
-
 class AbsencesLoaded extends AbsencesState {
   final List<AbsenceWithMember> absences;
   final bool hasMore;
@@ -21,6 +19,7 @@ class AbsencesLoaded extends AbsencesState {
   final AbsenceType? selectedType;
   final DateTimeRange? selectedDateRange;
   final bool isExporting;
+  final bool isLoadingMore;
 
   AbsencesLoaded({
     required this.absences,
@@ -29,6 +28,7 @@ class AbsencesLoaded extends AbsencesState {
     this.selectedType,
     this.selectedDateRange,
     this.isExporting = false,
+    this.isLoadingMore = false,
   });
 
   AbsencesLoaded copyWith({
@@ -38,6 +38,7 @@ class AbsencesLoaded extends AbsencesState {
     AbsenceType? selectedType,
     DateTimeRange? selectedDateRange,
     bool? isExporting,
+    bool? isLoadingMore,
   }) {
     return AbsencesLoaded(
       absences: absences ?? this.absences,
@@ -46,6 +47,7 @@ class AbsencesLoaded extends AbsencesState {
       selectedType: selectedType ?? this.selectedType,
       selectedDateRange: selectedDateRange ?? this.selectedDateRange,
       isExporting: isExporting ?? this.isExporting,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -57,6 +59,7 @@ class AbsencesLoaded extends AbsencesState {
     selectedType,
     selectedDateRange,
     isExporting,
+    isLoadingMore,
   ];
 }
 

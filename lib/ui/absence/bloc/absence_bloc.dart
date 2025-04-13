@@ -63,8 +63,9 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
 
   Future<void> _onLoadMoreAbsences(LoadMoreAbsences event, Emitter<AbsencesState> emit) async {
     final currentState = state;
+
     if (currentState is AbsencesLoaded) {
-      emit(AbsencesLoadingMore());
+      emit(currentState.copyWith(isLoadingMore: true));
 
       final result = await getAbsencesWithMembers(offset: event.offset, limit: event.limit);
 
