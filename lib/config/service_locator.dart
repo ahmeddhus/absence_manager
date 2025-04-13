@@ -9,7 +9,7 @@ import 'package:absence_manager/data/services/local/local_json_loader.dart';
 import 'package:absence_manager/data/services/local/local_member_service.dart';
 import 'package:absence_manager/domain/use_cases/get_absences_with_members_use_case.dart';
 import 'package:absence_manager/ui/absence/bloc/absence_bloc.dart';
-import 'package:absence_manager/util/i_cal_exporter_factory.dart';
+import 'package:absence_manager/utils/i_cal_exporter_factory.dart';
 import 'package:get_it/get_it.dart';
 
 final sl = GetIt.instance;

@@ -2,7 +2,7 @@ import 'package:absence_manager/domain/models/absence/absence.dart';
 import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/models/member/member.dart';
-import 'package:absence_manager/util/i_cal_exporter.dart';
+import 'package:absence_manager/utils/i_cal_exporter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

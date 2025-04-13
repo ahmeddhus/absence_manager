@@ -1,6 +1,6 @@
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart';
-import 'package:absence_manager/util/i_cal_exporter.dart';
+import 'package:absence_manager/utils/i_cal_exporter.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Mobile implementation of [AbsenceExporter].
