@@ -1,3 +1,4 @@
+import 'package:absence_manager/core/result/result_extensions.dart';
 import 'package:absence_manager/domain/models/absence/absence_type.dart';
 import 'package:absence_manager/domain/models/absence_with_member.dart';
 import 'package:absence_manager/domain/use_cases/absence_i_cal_exporter.dart';
@@ -23,17 +24,22 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
 
   Future<void> _onLoadAbsences(LoadAbsences event, Emitter<AbsencesState> emit) async {
     emit(AbsencesLoading());
-    try {
-      final result = await getAbsencesWithMembers(offset: 0, limit: 10);
-      _emitLoaded(
-        emit,
-        result.absences,
-        hasMore: result.absences.length == 10,
-        totalCount: result.totalCount,
-      );
-    } catch (e) {
-      emit(AbsencesError(e.toString()));
-    }
+
+    final result = await getAbsencesWithMembers(offset: 0, limit: 10);
+
+    await result.handle(
+      onSuccess: (value) async {
+        _emitLoaded(
+          emit,
+          value.absences,
+          hasMore: value.absences.length == 10,
+          totalCount: value.totalCount,
+        );
+      },
+      onError: (error) async {
+        emit(AbsencesError(error.toString()));
+      },
+    );
   }
 
   Future<void> _onFilterAbsences(FilterAbsences event, Emitter<AbsencesState> emit) async {
@@ -42,34 +48,42 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     _selectedType = event.type;
     _selectedDateRange = event.dateRange;
 
-    try {
-      final result = await getAbsencesWithMembers(offset: 0, limit: 100);
-      final filtered = result.absences.where(_matchesCurrentFilters).toList();
+    final result = await getAbsencesWithMembers(offset: 0, limit: 100);
 
-      _emitLoaded(emit, filtered, hasMore: false, totalCount: result.totalCount);
-    } catch (e) {
-      emit(AbsencesError(e.toString()));
-    }
+    await result.handle(
+      onSuccess: (value) async {
+        final filtered = value.absences.where(_matchesCurrentFilters).toList();
+        _emitLoaded(emit, filtered, hasMore: false, totalCount: value.totalCount);
+      },
+      onError: (error) async {
+        emit(AbsencesError(error.toString()));
+      },
+    );
   }
 
   Future<void> _onLoadMoreAbsences(LoadMoreAbsences event, Emitter<AbsencesState> emit) async {
     final currentState = state;
     if (currentState is AbsencesLoaded) {
       emit(AbsencesLoadingMore());
-      try {
-        final result = await getAbsencesWithMembers(offset: event.offset, limit: event.limit);
-        final filteredNew = result.absences.where(_matchesCurrentFilters).toList();
-        final combined = currentState.absences + filteredNew;
 
-        _emitLoaded(
-          emit,
-          combined,
-          hasMore: result.absences.length == event.limit,
-          totalCount: result.totalCount,
-        );
-      } catch (e) {
-        emit(AbsencesError(e.toString()));
-      }
+      final result = await getAbsencesWithMembers(offset: event.offset, limit: event.limit);
+
+      await result.handle(
+        onSuccess: (value) async {
+          final filteredNew = value.absences.where(_matchesCurrentFilters).toList();
+          final combined = currentState.absences + filteredNew;
+
+          _emitLoaded(
+            emit,
+            combined,
+            hasMore: value.absences.length == event.limit,
+            totalCount: value.totalCount,
+          );
+        },
+        onError: (error) async {
+          emit(AbsencesError(error.toString()));
+        },
+      );
     }
   }
 
