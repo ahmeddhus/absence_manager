@@ -4,6 +4,24 @@ A Flutter application to manage and display employee absences. It includes featu
 
 ---
 
+## 🧱 Architecture Overview
+
+This project follows clean architecture principles with a layered approach, separating data, domain, and UI concerns. The structure is designed to be modular, scalable, and testable.
+
+The architecture is inspired by the official Flutter team's guidance on scalable app design:  
+📘 [Flutter Architecture Guide](https://docs.flutter.dev/app-architecture/guide)
+
+For full implementation details and folder responsibilities, see [ARCHITECTURE.md](ARCHITECTURE.md).
+
+---
+
+## 📡 Backend API
+
+This app is powered by a custom NestJS API I built and deployed using Railway.  
+For API details, routes, and setup instructions, see the backend [README.md](https://github.com/ahmeddhus/absence-api-nestjs/blob/master/README.md).
+
+---
+
 ## ✅ Task Checklist
 
 ### Initial Setup
@@ -36,7 +54,7 @@ A Flutter application to manage and display employee absences. It includes featu
 
 ### Bonus Features
 - [x] Generate an iCal file to import into Outlook
-- [ ] Create a small, separate API for serving local assets (simulating a backend)
+- [x] Create a small, separate API for serving local assets (simulating a backend)
 
 ---
 
@@ -44,17 +62,6 @@ A Flutter application to manage and display employee absences. It includes featu
 
 You can view and test the deployed app here:  
 🔗 [https://ahmeddhus.github.io/absence_manager/](https://ahmeddhus.github.io/absence_manager/)
-
----
-
-## 🧱 Architecture Overview
-
-This project follows clean architecture principles with a layered approach, separating data, domain, and UI concerns. The structure is designed to be modular, scalable, and testable.
-
-The architecture is inspired by the official Flutter team's guidance on scalable app design:  
-📘 [Flutter Architecture Guide](https://docs.flutter.dev/app-architecture/guide)
-
-For full implementation details and folder responsibilities, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
