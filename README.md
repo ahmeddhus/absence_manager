@@ -63,6 +63,13 @@ For API details, routes, and setup instructions, see the backend [README.md](htt
 You can view and test the deployed app here:  
 🔗 [https://ahmeddhus.github.io/absence_manager/](https://ahmeddhus.github.io/absence_manager/)
 
+### 🔄 Hot Reload Tip
+If you’ve visited the page before, your browser may cache an older version.  
+To see the latest version (`v1.3.2+1`), perform a **hard refresh**:
+
+- **Windows/Linux**: `Ctrl + Shift + R`
+- **Mac**: `Cmd + Shift + R`
+
 ---
 
 ## 🔀 Branch Naming Convention
