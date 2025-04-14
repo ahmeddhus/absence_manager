@@ -14,24 +14,28 @@ It separates the app into three main layers:
 
 ```
 lib/
-├── config/                   # Global configuration (e.g., themes, app setup)
-├── data/                     # Manages data retrieval/storage
+├── config/                   # Global configuration (themes, setup, DI, etc.)
+├── core/                     # Cross-cutting concerns and foundational logic
+│   ├── network/              # Custom HTTP client, network checker
+│   └── result/               # Functional types like Result, ResultExtensions
+├── data/                     # Data retrieval/storage
 │   ├── repositories/         # Repository interfaces and implementations
 │   │   ├── <feature_a>/      # e.g., entity_a_repository.dart
 │   │   └── <feature_b>/      # e.g., entity_b_repository.dart
-│   └── services/             # Low-level APIs, local data loaders, shared prefs
+│   └── services/             # Low-level APIs, local data loaders
 │       ├── api/
 │       │   └── model/        # API data models (DTOs)
-│       └── local/            # JSON loaders, local storage
-├── domain/                   # Core business logic and models
-│   ├── models/               # Pure Dart entities (no framework dependencies)
-│   └── usecases/             # Application-specific actions (e.g., pagination logic)
+│       └── local/            # JSON loaders, local storage (Hive, SharedPrefs)
+├── domain/                   # Business logic and core entities
+│   ├── models/               # Pure Dart entities (no Flutter deps)
+│   └── usecases/             # Application actions (pagination, filtering)
 ├── ui/                       # Presentation layer (screens, widgets, state)
-│   └── <feature_screen>/     # Feature-specific UI (e.g., home_screen)
-│       ├── bloc/             # State management using BLoC
-│       └── widgets/          # Reusable UI components
-├── utils/                     # Shared utilities, extensions, helpers
+│   └── <feature_screen>/     # Feature-specific UI
+│       ├── bloc/             # State management with BLoC/Cubit
+│       └── widgets/          # Reusable UI components for that feature
+├── utils/                    # Global helpers, extensions, validators
 └── main.dart                 # Application entry point
+
 ```
 
 ---
