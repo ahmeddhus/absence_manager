@@ -70,3 +70,34 @@ You can view and test the deployed app here:
 This project follows a consistent and descriptive branch naming strategy.
 
 📄 See full details in [BRANCHING.md](BRANCHING.md)
+
+---
+
+## 📦 Packages Used
+
+| Package                 | Purpose                                                                 |
+|--------------------------|-------------------------------------------------------------------------|
+| `flutter_bloc`           | State management using the BLoC pattern                                 |
+| `equatable`              | Simplifies equality checks in BLoC states and events                    |
+| `http`                   | Used for networking and connectivity checks                             |
+| `hive` / `hive_flutter`  | Lightweight and fast local data storage for offline caching             |
+| `package_info_plus`      | Fetches app version and package info for display in the Info dialog     |
+| `path_provider`          | Provides file storage paths needed by Hive                              |
+| `get_it`                 | Service locator for dependency injection                                |
+| `share_plus`             | Enables sharing exported iCal files                                     |
+| `universal_html`         | Cross-platform HTML support for iCal export (especially web)            |
+| `freezed` / `freezed_annotation` | Code generation for immutable models                          |
+| `json_serializable` / `json_annotation` | JSON serialization for API and local models            |
+
+### 🧪 Dev/Test Dependencies
+
+| Package            | Purpose                                                                 |
+|--------------------|-------------------------------------------------------------------------|
+| `flutter_test`     | Flutter’s official test library                                         |
+| `bloc_test`        | Unit testing support for Cubits and BLoCs                               |
+| `mockito`          | Mocking dependencies in unit tests                                      |
+| `build_runner`     | Code generation for models and adapters                                 |
+| `hive_generator`   | Generates type adapters for Hive models                                 |
+| `flutter_lints`    | Enforces recommended lint rules                                          |
+
+---
