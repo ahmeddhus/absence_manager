@@ -47,6 +47,7 @@ dev_dependencies:
 dependency_overrides:
   # Solve conflicts between json_serializable and hive_generator
   source_gen: ^2.0.0
+  analyzer: ^8.1.1
 
 flutter:
   uses-material-design: true
